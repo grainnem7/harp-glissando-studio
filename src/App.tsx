@@ -18,7 +18,6 @@ const initialPedals: PedalPositions = {
 
 function App() {
   const [pedalPositions, setPedalPositions] = useState<PedalPositions>(initialPedals)
-  const [isPlaying, setIsPlaying] = useState(false)
   const audioEngine = useAudioEngine()
 
   useEffect(() => {
@@ -60,7 +59,6 @@ function App() {
       />
       <div className="main-content">
         <HarpStrings 
-          pedalPositions={pedalPositions}
           onStringPlay={handleStringPlay}
           onGlissando={handleGlissando}
         />

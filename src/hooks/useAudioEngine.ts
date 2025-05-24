@@ -54,7 +54,7 @@ export function useAudioEngine() {
   const playNote = (note: string, octave: number, pedalPositions: PedalPositions) => {
     if (!synthRef.current) return
 
-    const { note: modifiedNote, frequency } = applyPedalToNote(note, octave, pedalPositions)
+    const { frequency } = applyPedalToNote(note, octave, pedalPositions)
     
     // Play the note with slight randomization for more natural sound
     const velocity = 0.7 + Math.random() * 0.3

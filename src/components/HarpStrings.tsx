@@ -4,12 +4,11 @@ import { PedalPositions, HarpString } from '../types'
 import { generateHarpStrings } from '../utils/musicTheory'
 
 interface HarpStringsProps {
-  pedalPositions: PedalPositions
   onStringPlay: (note: string, octave: number) => void
   onGlissando: (notes: Array<{note: string, octave: number}>) => void
 }
 
-function HarpStrings({ pedalPositions, onStringPlay, onGlissando }: HarpStringsProps) {
+function HarpStrings({ onStringPlay, onGlissando }: HarpStringsProps) {
   const [strings] = useState<HarpString[]>(() => generateHarpStrings())
   const [activeStrings, setActiveStrings] = useState<Set<number>>(new Set())
   const [glissandoNotes, setGlissandoNotes] = useState<Array<{note: string, octave: number}>>([])
