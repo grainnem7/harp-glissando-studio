@@ -28,20 +28,21 @@ function LeverHarpStrings({ onStringPlay, onGlissando, hoverMode = false, onStri
 
   // Apply preset
   const applyPreset = (preset: LeverHarpPreset) => {
-    const newStrings = [...strings]
-    preset.leverPattern.forEach((engaged, index) => {
-      if (index < newStrings.length) {
-        newStrings[index].leverEngaged = engaged
-      }
-    })
+    const newStrings = strings.map((string, index) => ({
+      ...string,
+      leverEngaged: index < preset.leverPattern.length ? preset.leverPattern[index] : false
+    }))
     setStrings(newStrings)
     setSelectedPreset(preset.name)
   }
 
   // Toggle individual lever
   const toggleLever = (stringIndex: number) => {
-    const newStrings = [...strings]
-    newStrings[stringIndex].leverEngaged = !newStrings[stringIndex].leverEngaged
+    const newStrings = strings.map((string, index) => 
+      index === stringIndex 
+        ? { ...string, leverEngaged: !string.leverEngaged }
+        : string
+    )
     setStrings(newStrings)
     setSelectedPreset('Custom')
   }
@@ -243,7 +244,31 @@ function LeverHarpStrings({ onStringPlay, onGlissando, hoverMode = false, onStri
               onMouseEnter={hoverMode ? () => playString(index) : undefined}
             >
               <div className="lever-container">
-                <div className="lever-note-label">
+                <div 
+                  className="lever-note-label"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    toggleLever(index)
+                  }}
+                  onPointerDown={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                  }}
+                  onPointerUp={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      toggleLever(index)
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Toggle lever for ${getActualNoteName(string)}`}
+                >
                   {(() => {
                     const { note } = calculateLeverHarpPitch(string)
                     // Format the note with proper symbols
@@ -267,7 +292,6 @@ function LeverHarpStrings({ onStringPlay, onGlissando, hoverMode = false, onStri
                   }}
                   aria-label={`Lever for ${getActualNoteName(string)}`}
                 >
-                  <div className="lever-indicator" />
                 </button>
               </div>
               

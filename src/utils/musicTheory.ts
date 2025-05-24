@@ -275,51 +275,30 @@ export const leverHarpScales = [
     type: 'major'
   },
   {
-    name: 'F Major',
-    description: 'One lever (B♭ to B♮)',
-    leverPattern: (() => {
-      const pattern = new Array(34).fill(false)
-      // Only engage B strings
-      for (let i = 0; i < 34; i++) {
-        const noteIndex = i % 7
-        const note = noteOrder[noteIndex]
-        if (note === 'B') pattern[i] = true
-      }
-      return pattern
-    })(),
-    type: 'major'
-  },
-  {
-    name: 'G Major',
-    description: 'Two levers (E♭ to E♮, B♭ to B♮)',
-    leverPattern: (() => {
-      const pattern = new Array(34).fill(false)
-      // Engage E and B strings
-      for (let i = 0; i < 34; i++) {
-        const noteIndex = i % 7
-        const note = noteOrder[noteIndex]
-        if (['E', 'B'].includes(note)) pattern[i] = true
-      }
-      return pattern
-    })(),
-    type: 'major'
-  },
-  {
-    name: 'A♭ Major',
-    description: 'No additional levers',
-    leverPattern: new Array(34).fill(false),
-    type: 'major'
-  },
-  {
     name: 'B♭ Major',
-    description: 'One lever (E♭ to E♮)',
+    description: 'Raise A levers',
     leverPattern: (() => {
       const pattern = new Array(34).fill(false)
-      // Engage E strings
+      // Raise A strings (A♭ to A♮)
       for (let i = 0; i < 34; i++) {
         const noteIndex = i % 7
         const note = noteOrder[noteIndex]
-        if (note === 'E') pattern[i] = true
+        if (note === 'A') pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'F Major',
+    description: 'Raise A and E levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Raise A and E strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'E'].includes(note)) pattern[i] = true
       }
       return pattern
     })(),
@@ -327,14 +306,29 @@ export const leverHarpScales = [
   },
   {
     name: 'C Major',
-    description: 'All naturals',
+    description: 'Raise A, B, and E levers',
     leverPattern: (() => {
       const pattern = new Array(34).fill(false)
-      // Engage E, A, B strings
+      // Raise A, B, and E strings
       for (let i = 0; i < 34; i++) {
         const noteIndex = i % 7
         const note = noteOrder[noteIndex]
-        if (['E', 'A', 'B'].includes(note)) pattern[i] = true
+        if (['A', 'B', 'E'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'G Major',
+    description: 'Raise A, B, E, and F levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Raise A, B, E, and F strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'B', 'E', 'F'].includes(note)) pattern[i] = true
       }
       return pattern
     })(),
@@ -342,14 +336,42 @@ export const leverHarpScales = [
   },
   {
     name: 'D Major',
-    description: 'Five levers',
+    description: 'Raise A, B, C, E, and F levers',
     leverPattern: (() => {
       const pattern = new Array(34).fill(false)
-      // Engage E, A, B, F, C strings
+      // Raise A, B, C, E, and F strings
       for (let i = 0; i < 34; i++) {
         const noteIndex = i % 7
         const note = noteOrder[noteIndex]
-        if (['E', 'A', 'B', 'F', 'C'].includes(note)) pattern[i] = true
+        if (['A', 'B', 'C', 'E', 'F'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'A Major',
+    description: 'Raise A, B, C, D, E, and F levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Raise A, B, C, D, E, and F strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'B', 'C', 'D', 'E', 'F'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'E Major',
+    description: 'Raise all levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Raise all strings
+      for (let i = 0; i < 34; i++) {
+        pattern[i] = true
       }
       return pattern
     })(),
@@ -359,40 +381,16 @@ export const leverHarpScales = [
   // Minor scales (possible with lever harp)
   {
     name: 'C Minor',
-    description: 'Two levers (A♭ to A♮, B♭ to B♮)',
-    leverPattern: (() => {
-      const pattern = new Array(34).fill(false)
-      // Engage A and B strings
-      for (let i = 0; i < 34; i++) {
-        const noteIndex = i % 7
-        const note = noteOrder[noteIndex]
-        if (['A', 'B'].includes(note)) pattern[i] = true
-      }
-      return pattern
-    })(),
+    description: 'No levers needed',
+    leverPattern: new Array(34).fill(false),
     type: 'minor'
   },
   {
-    name: 'D Minor',
-    description: 'Three levers (E♭ to E♮, A♭ to A♮, B♭ to B♮)',
+    name: 'G Minor',
+    description: 'Raise A lever',
     leverPattern: (() => {
       const pattern = new Array(34).fill(false)
-      // Engage E, A, B strings
-      for (let i = 0; i < 34; i++) {
-        const noteIndex = i % 7
-        const note = noteOrder[noteIndex]
-        if (['E', 'A', 'B'].includes(note)) pattern[i] = true
-      }
-      return pattern
-    })(),
-    type: 'minor'
-  },
-  {
-    name: 'E♭ Minor',
-    description: 'One lever (A♭ to A♮)',
-    leverPattern: (() => {
-      const pattern = new Array(34).fill(false)
-      // Engage A strings
+      // Raise A strings
       for (let i = 0; i < 34; i++) {
         const noteIndex = i % 7
         const note = noteOrder[noteIndex]
@@ -403,30 +401,15 @@ export const leverHarpScales = [
     type: 'minor'
   },
   {
-    name: 'F Minor',
-    description: 'Two levers (A♭ to A♮, B♭ to B♮)',
+    name: 'D Minor',
+    description: 'Raise A and E levers',
     leverPattern: (() => {
       const pattern = new Array(34).fill(false)
-      // Engage A and B strings
+      // Raise A and E strings
       for (let i = 0; i < 34; i++) {
         const noteIndex = i % 7
         const note = noteOrder[noteIndex]
-        if (['A', 'B'].includes(note)) pattern[i] = true
-      }
-      return pattern
-    })(),
-    type: 'minor'
-  },
-  {
-    name: 'G Minor',
-    description: 'One lever (E♭ to E♮)',
-    leverPattern: (() => {
-      const pattern = new Array(34).fill(false)
-      // Engage E strings
-      for (let i = 0; i < 34; i++) {
-        const noteIndex = i % 7
-        const note = noteOrder[noteIndex]
-        if (note === 'E') pattern[i] = true
+        if (['A', 'E'].includes(note)) pattern[i] = true
       }
       return pattern
     })(),
@@ -434,14 +417,59 @@ export const leverHarpScales = [
   },
   {
     name: 'A Minor',
-    description: 'Three levers (E♭ to E♮, A♭ to A♮, B♭ to B♮)',
+    description: 'Raise A, B, and E levers',
     leverPattern: (() => {
       const pattern = new Array(34).fill(false)
-      // Engage E, A, B strings
+      // Raise A, B, and E strings
       for (let i = 0; i < 34; i++) {
         const noteIndex = i % 7
         const note = noteOrder[noteIndex]
-        if (['E', 'A', 'B'].includes(note)) pattern[i] = true
+        if (['A', 'B', 'E'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'E Minor',
+    description: 'Raise A, B, E, and F levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Raise A, B, E, and F strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'B', 'E', 'F'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'B Minor',
+    description: 'Raise A, B, C, E, and F levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Raise A, B, C, E, and F strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'B', 'C', 'E', 'F'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'F♯ Minor',
+    description: 'Raise A, B, C, D, E, and F levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Raise A, B, C, D, E, and F strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'B', 'C', 'D', 'E', 'F'].includes(note)) pattern[i] = true
       }
       return pattern
     })(),

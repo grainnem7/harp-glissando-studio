@@ -68,12 +68,13 @@
 
 /* Scale Selection */
 .scale-selection {
-  padding: 15px 20px;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 25px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
-  gap: 30px;
+  gap: 35px;
   flex-wrap: wrap;
+  backdrop-filter: blur(10px);
 }
 
 .scale-section {
@@ -82,50 +83,73 @@
 }
 
 .scale-section h4 {
-  margin: 0 0 10px 0;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 600;
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .scale-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
 }
 
 .scale-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  color: rgba(255, 255, 255, 0.8);
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+}
+
+.scale-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
 }
 
 .scale-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.15) 100%);
+  border-color: rgba(255, 255, 255, 0.4);
   color: white;
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.scale-btn:hover::before {
+  left: 100%;
 }
 
 .scale-btn.active {
-  background: linear-gradient(145deg, rgba(156, 106, 222, 0.8) 0%, rgba(156, 106, 222, 0.6) 100%);
-  border-color: rgba(156, 106, 222, 0.8);
+  background: linear-gradient(145deg, rgba(156, 106, 222, 0.9) 0%, rgba(156, 106, 222, 0.7) 100%);
+  border-color: rgba(156, 106, 222, 1);
   color: white;
-  box-shadow: 0 2px 8px rgba(156, 106, 222, 0.3);
+  box-shadow: 0 4px 20px rgba(156, 106, 222, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+  transform: scale(1.02);
 }
 
 .scale-btn.active:hover {
-  background: linear-gradient(145deg, rgba(156, 106, 222, 0.9) 0%, rgba(156, 106, 222, 0.7) 100%);
-  transform: translateY(-1px);
+  background: linear-gradient(145deg, rgba(156, 106, 222, 1) 0%, rgba(156, 106, 222, 0.8) 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 25px rgba(156, 106, 222, 0.6);
 }
 
 .lever-harp-strings-container {
@@ -210,6 +234,15 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   letter-spacing: 0.3px;
   backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lever-note-label:hover {
+  background: linear-gradient(145deg, rgba(156, 106, 222, 0.35) 0%, rgba(156, 106, 222, 0.25) 100%);
+  border-color: rgba(156, 106, 222, 0.5);
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(156, 106, 222, 0.3);
 }
 
 /* Desktop styles for lever note labels */
@@ -223,47 +256,142 @@
 }
 
 .lever-toggle {
-  width: 24px;
-  height: 28px;
-  background: rgba(50, 50, 70, 0.9);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
+  width: 20px;
+  height: 30px;
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  transform-origin: bottom center;
+  transition: transform 0.3s ease;
+  margin-left: -10px; /* Move away from string */
 }
 
-.lever-toggle:hover {
-  background: rgba(70, 70, 90, 0.9);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: scale(1.05);
+/* Simple straight lever */
+.lever-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #7a7a8e 0%, #5a5a6e 100%);
+  border-radius: 2px;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
+/* Small handle at top */
+.lever-toggle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(145deg, #8a8a9e 0%, #6a6a7e 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Hover State */
+.lever-toggle:hover::before {
+  background: linear-gradient(180deg, #8a8a9e 0%, #6a6a7e 100%);
+  box-shadow: 
+    0 1px 4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.lever-toggle:hover::after {
+  background: linear-gradient(145deg, #9a9aae 0%, #7a7a8e 100%);
+  transform: translateX(-50%) scale(1.1);
+}
+
+/* Engaged State - Simple diagonal rotation */
 .lever-toggle.engaged {
-  background: rgba(156, 106, 222, 0.8);
-  border-color: #9c6ade;
-  transform: rotate(-15deg);
+  transform: rotate(-30deg) translateX(8px);
+}
+
+/* Lever changes color when engaged */
+.lever-toggle.engaged::before {
+  background: linear-gradient(180deg, #ad7dee 0%, #9c6ade 100%);
+  box-shadow: 
+    0 1px 4px rgba(156, 106, 222, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 0 8px rgba(156, 106, 222, 0.3);
+}
+
+/* Handle glows when engaged */
+.lever-toggle.engaged::after {
+  background: linear-gradient(145deg, #bd8dfe 0%, #ad7dee 100%);
+  transform: translateX(-50%) scale(1.15);
+  box-shadow: 
+    0 1px 3px rgba(156, 106, 222, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 10px rgba(156, 106, 222, 0.4);
+}
+.lever-toggle.engaged .lever-indicator {
+  background: radial-gradient(circle at 30% 30%, #cd9dff, #9c6ade);
+  box-shadow: 
+    inset -1px -1px 2px rgba(0, 0, 0, 0.3),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(156, 106, 222, 0.4);
+}
+
+/* Fork/cam pressing against string */
+.lever-toggle.engaged .lever-indicator::before {
+  background: linear-gradient(180deg, #ad7dee 0%, #9c6ade 100%);
+  transform: translateX(-50%) translateY(2px) scaleY(0.9); /* Compressed against string */
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    0 2px 4px rgba(156, 106, 222, 0.3);
+}
+
+/* Fork prongs spread slightly when engaged */
+.lever-toggle.engaged .lever-indicator::after {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    #9c6ade 12%, 
+    #9c6ade 38%, 
+    transparent 38%,
+    transparent 62%,
+    #9c6ade 62%,
+    #9c6ade 88%,
+    transparent 100%
+  );
+  transform: translateX(-50%) scaleX(1.1);
+  box-shadow: 0 1px 3px rgba(156, 106, 222, 0.3);
 }
 
 .lever-toggle.engaged:hover {
-  background: rgba(156, 106, 222, 0.9);
-  transform: rotate(-15deg) scale(1.05);
+  transform: rotate(-20deg) translateX(5px);
 }
 
-.lever-indicator {
-  width: 12px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 2px;
-  transition: all 0.2s ease;
+.lever-toggle.engaged:hover::before {
+  background: linear-gradient(145deg, #6a6a7e 0%, #5a5a6e 100%);
+  border-color: rgba(156, 106, 222, 0.4);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    0 2px 5px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(156, 106, 222, 0.3);
 }
 
-.lever-toggle.engaged .lever-indicator {
-  background: white;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+.lever-toggle.engaged:hover::after {
+  background: linear-gradient(180deg, 
+    #cd9dff 0%, 
+    #bd8dfe 15%,
+    #ad7dee 85%,
+    #9c6ade 100%
+  );
 }
 
 .string-line {
@@ -274,7 +402,11 @@
   top: 70px;
   border-radius: 1px;
   box-shadow: 0 0 4px rgba(255,255,255,0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top center;
 }
+
+/* No visual changes to string when lever is engaged - string maintains its color */
 
 .lever-harp-string.red .string-line {
   background: linear-gradient(180deg, rgba(255,100,100,0.6) 0%, rgba(255,100,100,0.9) 100%);
@@ -358,13 +490,17 @@
   }
   
   .lever-toggle {
-    width: 20px;
+    width: 16px;
     height: 24px;
   }
   
-  .lever-indicator {
-    width: 10px;
-    height: 16px;
+  .lever-toggle::before {
+    width: 3px;
+  }
+  
+  .lever-toggle::after {
+    width: 6px;
+    height: 6px;
   }
   
   .string-label {
@@ -387,11 +523,13 @@
   
   .scale-section h4 {
     font-size: 12px;
+    margin-bottom: 10px;
   }
   
   .scale-btn {
-    padding: 5px 10px;
-    font-size: 11px;
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 10px;
   }
 }
 
@@ -425,13 +563,37 @@
   }
   
   .lever-toggle {
-    width: 18px;
-    height: 22px;
+    width: 20px;
+    height: 28px;
+  }
+  
+  .lever-toggle::before {
+    width: 14px;
+    height: 8px;
+  }
+  
+  .lever-toggle::after {
+    width: 4px;
+    height: 16px;
+    top: 6px;
   }
   
   .lever-indicator {
+    width: 5px;
+    height: 5px;
+    top: 8px;
+  }
+  
+  .lever-indicator::before {
+    width: 6px;
+    height: 5px;
+    bottom: -14px;
+  }
+  
+  .lever-indicator::after {
     width: 8px;
-    height: 14px;
+    height: 2px;
+    bottom: -16px;
   }
   
   .string-label {
