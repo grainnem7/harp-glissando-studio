@@ -23,6 +23,8 @@ function App() {
   const [pedalPositions, setPedalPositions] = useState<PedalPositions>(initialPedals)
   const [currentRange, setCurrentRange] = useState<HarpRange>('middle') // Start with middle range for better mobile experience
   const [isHoverMode, setIsHoverMode] = useState(false)
+  const [currentPresetName, setCurrentPresetName] = useState<string>('C Major')
+  const [highlightedPedal, setHighlightedPedal] = useState<PedalNote | null>(null)
   const audioEngine = useAudioEngine()
 
   useEffect(() => {
@@ -46,6 +48,11 @@ function App() {
       ...prev,
       [pedal]: position
     }))
+    setCurrentPresetName('Custom')
+    
+    // Highlight the pedal when it's changed from the scale display
+    setHighlightedPedal(pedal)
+    setTimeout(() => setHighlightedPedal(null), 1000)
   }
 
   const handleStringPlay = (note: string, octave: number) => {
@@ -95,6 +102,7 @@ function App() {
           onStringPlay={handleStringPlay}
           onGlissando={handleGlissando}
           hoverMode={isHoverMode}
+          onRangeChange={setCurrentRange}
         />
       </div>
       
@@ -102,11 +110,16 @@ function App() {
         <HarpPedalDiagram 
           pedalPositions={pedalPositions}
           onPedalChange={handlePedalChange}
-          onPresetSelect={setPedalPositions}
+          onPresetSelect={(pedals, name) => {
+            setPedalPositions(pedals)
+            if (name) setCurrentPresetName(name)
+          }}
+          highlightedPedal={highlightedPedal}
         />
         <ScaleDisplay 
           pedalPositions={pedalPositions}
           onPedalChange={handlePedalChange}
+          presetName={currentPresetName}
         />
       </div>
     </div>

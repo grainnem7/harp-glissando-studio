@@ -307,3 +307,42 @@
     top: 32px; /* (20px + 2px gap) + 10px = 32px */
   }
 }
+
+/* Highlighted pedal animation */
+.pedal-column.highlighted {
+  animation: pedalColumnHighlight 1s ease-out;
+}
+
+@keyframes pedalColumnHighlight {
+  0% {
+    background: rgba(156, 106, 222, 0.2);
+    box-shadow: 0 0 20px rgba(156, 106, 222, 0.6);
+    transform: scale(1.05);
+  }
+  50% {
+    background: rgba(156, 106, 222, 0.15);
+    box-shadow: 0 0 15px rgba(156, 106, 222, 0.4);
+  }
+  100% {
+    background: transparent;
+    box-shadow: none;
+    transform: scale(1);
+  }
+}
+
+.pedal-column.highlighted .pedal-letter {
+  animation: pedalLetterHighlight 1s ease-out;
+}
+
+@keyframes pedalLetterHighlight {
+  0% {
+    color: #9c6ade;
+    text-shadow: 0 0 10px rgba(156, 106, 222, 0.8);
+    transform: scale(1.2);
+  }
+  100% {
+    color: #666;
+    text-shadow: none;
+    transform: scale(1);
+  }
+}

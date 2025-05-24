@@ -28,7 +28,6 @@
   justify-content: flex-end;
   position: relative;
   transition: all 0.2s ease;
-  border-left: 1px solid rgba(255,255,255,0.05);
   min-width: 0;
 }
 

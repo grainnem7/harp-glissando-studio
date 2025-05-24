@@ -5,14 +5,15 @@ import PresetManager from './PresetManager'
 interface HarpPedalDiagramProps {
   pedalPositions: PedalPositions
   onPedalChange: (pedal: PedalNote, position: PedalPosition) => void
-  onPresetSelect?: (preset: PedalPositions) => void
+  onPresetSelect?: (preset: PedalPositions, name?: string) => void
   readOnly?: boolean
+  highlightedPedal?: PedalNote | null
 }
 
 const leftFootPedals: PedalNote[] = ['D', 'C', 'B']
 const rightFootPedals: PedalNote[] = ['E', 'F', 'G', 'A']
 
-function HarpPedalDiagram({ pedalPositions, onPedalChange, onPresetSelect, readOnly = false }: HarpPedalDiagramProps) {
+function HarpPedalDiagram({ pedalPositions, onPedalChange, onPresetSelect, readOnly = false, highlightedPedal }: HarpPedalDiagramProps) {
   
   const handlePedalClick = (pedal: PedalNote, position: PedalPosition) => {
     if (readOnly) return
@@ -34,7 +35,7 @@ function HarpPedalDiagram({ pedalPositions, onPedalChange, onPresetSelect, readO
           {pedals.map(pedal => (
             <div 
               key={pedal} 
-              className="pedal-column"
+              className={`pedal-column ${highlightedPedal === pedal ? 'highlighted' : ''}`}
             >
               {/* Sharp position (top) */}
               <div 

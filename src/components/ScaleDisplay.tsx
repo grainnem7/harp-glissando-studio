@@ -5,14 +5,36 @@ import './ScaleDisplay.css'
 interface ScaleDisplayProps {
   pedalPositions: PedalPositions
   onPedalChange?: (pedal: PedalNote, position: PedalPosition) => void
+  presetName?: string
 }
 
-const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChange }) => {
+const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChange, presetName }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [hoveredNote, setHoveredNote] = useState<string | null>(null)
+  const [highlightedNote, setHighlightedNote] = useState<string | null>(null)
+  const previousPedalsRef = useRef<PedalPositions>(pedalPositions)
   
   // Store click regions for each note
   const noteRegions = useRef<{ note: string; x: number; y: number; width: number; height: number }[]>([])
+
+  // Detect pedal changes and highlight the changed note
+  useEffect(() => {
+    const changedPedal = Object.keys(pedalPositions).find(
+      key => pedalPositions[key as PedalNote] !== previousPedalsRef.current[key as PedalNote]
+    ) as PedalNote | undefined
+    
+    if (changedPedal) {
+      setHighlightedNote(changedPedal)
+      previousPedalsRef.current = { ...pedalPositions }
+      
+      // Clear highlight after 1 second
+      const timer = setTimeout(() => {
+        setHighlightedNote(null)
+      }, 1000)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [pedalPositions])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -95,19 +117,43 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
         ctx.fillStyle = '#e0e0e0'
       }
 
+      // Highlight if this note was changed
+      if (highlightedNote === note) {
+        // Draw soft glow effect
+        ctx.save()
+        ctx.shadowColor = '#9c6ade'
+        ctx.shadowBlur = 20
+        ctx.fillStyle = 'rgba(156, 106, 222, 0.2)'
+        ctx.beginPath()
+        ctx.arc(x, y, 18, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+      }
+
       // Draw accidental first if needed (with more space)
       if (position !== 'natural') {
-        ctx.font = isMobile ? '22px sans-serif' : '18px sans-serif'
+        ctx.save()
+        if (highlightedNote === note) {
+          ctx.fillStyle = '#9c6ade'
+          ctx.font = isMobile ? 'bold 22px sans-serif' : 'bold 18px sans-serif'
+        } else {
+          ctx.fillStyle = '#e0e0e0'
+          ctx.font = isMobile ? '22px sans-serif' : '18px sans-serif'
+        }
         const accidental = position === 'sharp' ? '♯' : '♭'
         const accidentalX = x - (isMobile ? 25 : 20)
         ctx.fillText(accidental, accidentalX, y + 5)
+        ctx.restore()
       }
 
       // Draw note head
       const noteSize = isMobile ? 8 : 6
+      ctx.save()
+      ctx.fillStyle = '#e0e0e0'
       ctx.beginPath()
       ctx.ellipse(x, y, noteSize, noteSize * 0.7, -20 * Math.PI / 180, 0, 2 * Math.PI)
       ctx.fill()
+      ctx.restore()
 
       // Draw stem
       ctx.beginPath()
@@ -127,7 +173,7 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
       }
     })
 
-  }, [pedalPositions, hoveredNote])
+  }, [pedalPositions, hoveredNote, highlightedNote])
 
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (!onPedalChange) return
@@ -197,6 +243,7 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
         onMouseMove={handleCanvasMove}
         onMouseLeave={() => setHoveredNote(null)}
       />
+      {presetName && <div className="preset-name-display">{presetName}</div>}
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { getAllCategories, getPresetsByCategory, PresetCategory, CategorizedPres
 import PresetNotation from './PresetNotation'
 
 interface PresetManagerProps {
-  onPresetSelect: (preset: PedalPositions) => void
+  onPresetSelect: (preset: PedalPositions, name?: string) => void
   currentPedals: PedalPositions
 }
 
@@ -31,7 +31,7 @@ function PresetManager({ onPresetSelect, currentPedals }: PresetManagerProps) {
   }, [selectedCategory, searchTerm, customPresets])
 
   const handlePresetClick = useCallback((preset: CategorizedPreset) => {
-    onPresetSelect(preset.pedals)
+    onPresetSelect(preset.pedals, preset.name)
     setIsOpen(false) // Close menu after selection
   }, [onPresetSelect])
 

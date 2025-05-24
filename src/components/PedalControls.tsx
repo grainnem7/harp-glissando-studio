@@ -4,6 +4,7 @@ import { PedalPositions, PedalNote, PedalPosition } from '../types'
 interface PedalControlsProps {
   pedalPositions: PedalPositions
   onPedalChange: (pedal: PedalNote, position: PedalPosition) => void
+  highlightedPedal?: PedalNote | null
 }
 
 const pedalOrder: PedalNote[] = ['D', 'C', 'B', 'E', 'F', 'G', 'A']
@@ -22,7 +23,7 @@ const nextPosition = (current: PedalPosition): PedalPosition => {
   }
 }
 
-function PedalControls({ pedalPositions, onPedalChange }: PedalControlsProps) {
+function PedalControls({ pedalPositions, onPedalChange, highlightedPedal }: PedalControlsProps) {
   const handlePedalClick = (pedal: PedalNote) => {
     const currentPosition = pedalPositions[pedal]
     const newPosition = nextPosition(currentPosition)
@@ -35,7 +36,7 @@ function PedalControls({ pedalPositions, onPedalChange }: PedalControlsProps) {
         {pedalOrder.map(pedal => (
           <div 
             key={pedal}
-            className={`pedal ${pedalPositions[pedal]}`}
+            className={`pedal ${pedalPositions[pedal]} ${highlightedPedal === pedal ? 'highlighted' : ''}`}
             onClick={() => handlePedalClick(pedal)}
           >
             <div className="pedal-letter">{pedal}</div>

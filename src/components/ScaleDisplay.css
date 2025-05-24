@@ -36,6 +36,20 @@
   min-height: 100px;
 }
 
+.preset-name-display {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #9c6ade;
+  font-weight: 500;
+  background: rgba(156, 106, 222, 0.1);
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
 @media (max-width: 768px) {
   .scale-display {
     padding: 15px;
