@@ -1,15 +1,15 @@
 .scale-display {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.06) 100%);
   border-radius: 16px;
-  padding: 15px 20px;
+  padding: 20px 25px;
   margin: 10px 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
 }
 
 .scale-display h3 {
-  margin: 0 0 10px 0;
-  font-size: 14px;
+  margin: 0 0 15px 0;
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.6);
   font-weight: 400;
   text-transform: uppercase;
@@ -31,9 +31,9 @@
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   width: 100%;
-  max-width: 450px;
+  max-width: 600px;
   height: auto;
-  min-height: 100px;
+  min-height: 140px;
 }
 
 .preset-name-display {

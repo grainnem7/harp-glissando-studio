@@ -63,10 +63,10 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
     ctx.lineWidth = 1.5
 
     const isMobile = window.innerWidth < 768
-    const staffTop = isMobile ? 45 : 30
-    const staffLineSpacing = isMobile ? 14 : 10
-    const noteSpacing = isMobile ? (rect.width - 80) / 7 : 50
-    const leftMargin = isMobile ? 50 : 40
+    const staffTop = isMobile ? 45 : 50
+    const staffLineSpacing = isMobile ? 14 : 14
+    const noteSpacing = isMobile ? (rect.width - 80) / 7 : 70
+    const leftMargin = isMobile ? 50 : 60
 
     // Draw staff lines
     for (let i = 0; i < 5; i++) {
@@ -78,8 +78,8 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
     }
 
     // Draw treble clef (simplified)
-    ctx.font = isMobile ? '50px serif' : '40px serif'
-    ctx.fillText('𝄞', leftMargin - 35, staffTop + (isMobile ? 35 : 25))
+    ctx.font = isMobile ? '50px serif' : '55px serif'
+    ctx.fillText('𝄞', leftMargin - 45, staffTop + (isMobile ? 35 : 35))
 
     // Get scale notes
     const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as PedalNote[]
@@ -101,7 +101,7 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
       const y = staffTop + (yPos * staffLineSpacing)
 
       // Store click region
-      const regionSize = isMobile ? 30 : 25
+      const regionSize = isMobile ? 30 : 35
       noteRegions.current.push({
         note,
         x: x - regionSize/2,
@@ -135,19 +135,19 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
         ctx.save()
         if (highlightedNote === note) {
           ctx.fillStyle = '#9c6ade'
-          ctx.font = isMobile ? 'bold 22px sans-serif' : 'bold 18px sans-serif'
+          ctx.font = isMobile ? 'bold 22px sans-serif' : 'bold 24px sans-serif'
         } else {
           ctx.fillStyle = '#e0e0e0'
-          ctx.font = isMobile ? '22px sans-serif' : '18px sans-serif'
+          ctx.font = isMobile ? '22px sans-serif' : '24px sans-serif'
         }
         const accidental = position === 'sharp' ? '♯' : '♭'
-        const accidentalX = x - (isMobile ? 25 : 20)
+        const accidentalX = x - (isMobile ? 25 : 30)
         ctx.fillText(accidental, accidentalX, y + 5)
         ctx.restore()
       }
 
       // Draw note head
-      const noteSize = isMobile ? 8 : 6
+      const noteSize = isMobile ? 8 : 9
       ctx.save()
       ctx.fillStyle = '#e0e0e0'
       ctx.beginPath()
@@ -158,7 +158,7 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
       // Draw stem
       ctx.beginPath()
       ctx.moveTo(x + noteSize, y)
-      ctx.lineTo(x + noteSize, y - (isMobile ? 40 : 30))
+      ctx.lineTo(x + noteSize, y - (isMobile ? 40 : 45))
       ctx.stroke()
 
       // Draw ledger lines if needed
@@ -235,8 +235,8 @@ const ScaleDisplay: React.FC<ScaleDisplayProps> = ({ pedalPositions, onPedalChan
       <h3>Current Scale {onPedalChange && <span className="interactive-hint">(click notes to change)</span>}</h3>
       <canvas 
         ref={canvasRef} 
-        width={450} 
-        height={140}
+        width={600} 
+        height={180}
         className="scale-canvas"
         style={{ width: '100%', height: 'auto' }}
         onClick={handleCanvasClick}
