@@ -1,6 +1,6 @@
 import { useState, useRef, TouchEvent as ReactTouchEvent } from 'react'
 import './HarpStrings.css'
-import { PedalPositions, HarpString } from '../types'
+import { HarpString } from '../types'
 import { generateHarpStrings } from '../utils/musicTheory'
 
 interface HarpStringsProps {
