@@ -1,0 +1,112 @@
+.harp-strings-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.05) 100%);
+  cursor: pointer;
+}
+
+.strings-wrapper {
+  display: flex;
+  height: 100%;
+  padding: 20px 10px 80px 10px;
+}
+
+.harp-string {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.string-line {
+  width: 2px;
+  height: calc(100% - 30px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.6) 100%);
+  position: absolute;
+  top: 0;
+  border-radius: 1px;
+  box-shadow: 0 0 4px rgba(255,255,255,0.2);
+}
+
+.harp-string.red .string-line {
+  background: linear-gradient(180deg, rgba(255,100,100,0.6) 0%, rgba(255,100,100,0.9) 100%);
+  box-shadow: 0 0 8px rgba(255,100,100,0.5);
+}
+
+.harp-string.navy .string-line {
+  background: linear-gradient(180deg, rgba(70,100,255,0.6) 0%, rgba(70,100,255,0.9) 100%);
+  box-shadow: 0 0 8px rgba(70,100,255,0.5);
+}
+
+.harp-string.neutral .string-line {
+  background: linear-gradient(180deg, rgba(200,200,200,0.4) 0%, rgba(200,200,200,0.7) 100%);
+}
+
+.harp-string.active .string-line {
+  width: 4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,1) 100%);
+  box-shadow: 0 0 20px rgba(255,255,255,0.8);
+  animation: string-vibrate 0.1s ease-in-out infinite alternate;
+}
+
+.harp-string.red.active .string-line {
+  background: linear-gradient(180deg, rgba(255,150,150,1) 0%, rgba(255,200,200,1) 100%);
+  box-shadow: 0 0 25px rgba(255,150,150,1);
+}
+
+.harp-string.navy.active .string-line {
+  background: linear-gradient(180deg, rgba(150,150,255,1) 0%, rgba(200,200,255,1) 100%);
+  box-shadow: 0 0 25px rgba(150,150,255,1);
+}
+
+@keyframes string-vibrate {
+  from {
+    transform: translateX(-1px);
+  }
+  to {
+    transform: translateX(1px);
+  }
+}
+
+.string-label {
+  font-size: 10px;
+  padding: 2px 4px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 3px;
+  margin-top: 5px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.harp-string:hover .string-label,
+.harp-string.active .string-label {
+  opacity: 1;
+}
+
+.glissando-trail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+    rgba(255,255,255,0.3) 0%, 
+    transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+@media (max-width: 768px) {
+  .string-label {
+    font-size: 8px;
+  }
+  
+  .strings-wrapper {
+    padding: 10px 5px 60px 5px;
+  }
+}
