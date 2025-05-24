@@ -102,7 +102,6 @@ function App() {
           onStringPlay={handleStringPlay}
           onGlissando={handleGlissando}
           hoverMode={isHoverMode}
-          onRangeChange={setCurrentRange}
         />
       </div>
       

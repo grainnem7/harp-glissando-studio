@@ -42,6 +42,48 @@
   color: white;
 }
 
+.range-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.range-nav-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: white;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.range-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.range-nav-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.range-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.range-nav-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(156, 106, 222, 0.5);
+}
+
 @media (max-width: 768px) {
   .range-selector {
     width: 100%;
@@ -62,6 +104,11 @@
     font-size: 14px;
     border-radius: 6px;
   }
+  
+  .range-controls {
+    flex: 1;
+    justify-content: flex-end;
+  }
 }
 
 @media (max-width: 480px) {
@@ -79,9 +126,14 @@
   
   .range-dropdown {
     max-width: none;
-    width: 100%;
+    flex: 1;
     padding: 12px;
     font-size: 16px;
     text-align: center;
+  }
+  
+  .range-controls {
+    width: 100%;
+    justify-content: center;
   }
 }

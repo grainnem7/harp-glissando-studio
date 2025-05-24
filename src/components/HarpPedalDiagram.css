@@ -1,7 +1,7 @@
 .harp-pedal-diagram {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.06) 100%);
   border-radius: 16px;
-  padding: 20px;
+  padding: 25px;
   margin: 10px 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
@@ -11,8 +11,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  min-height: 120px;
+  gap: 30px;
+  min-height: 160px;
 }
 
 .pedal-group {
@@ -22,9 +22,9 @@
 }
 
 .pedal-group-label {
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -33,12 +33,12 @@
 .pedal-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 .pedal-columns {
   display: flex;
-  gap: 15px;
+  gap: 20px;
   position: relative;
 }
 
@@ -47,7 +47,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 39.5px; /* (25px + 2px gap) + 12.5px = 39.5px to center of middle position */
+  top: 52px; /* (35px + 2px gap) + 15px = 52px to center of middle position */
   height: 1px;
   background: rgba(255, 255, 255, 0.3);
   z-index: 1;
@@ -57,19 +57,19 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: 80px;
-  margin-right: 5px;
-  width: 20px;
+  height: 107px;
+  margin-right: 8px;
+  width: 25px;
   position: relative; /* Add relative positioning for absolute children */
 }
 
 .indicator-symbol {
-  font-size: 20px;
+  font-size: 26px;
   color: rgba(255, 255, 255, 0.5);
   font-weight: 600;
   text-align: right;
-  padding-right: 8px;
-  height: 25px;
+  padding-right: 10px;
+  height: 35px;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -79,15 +79,15 @@
 
 /* Position each symbol individually */
 .indicator-symbol.sharp {
-  top: -12px; /* Keep sharp symbol higher */
+  top: -16px; /* Keep sharp symbol higher */
 }
 
 .indicator-symbol.natural {
-  top: 15px; /* Keep natural symbol where it is now */
+  top: 20px; /* Keep natural symbol where it is now */
 }
 
 .indicator-symbol.flat {
-  top: 42px; /* Position flat symbol lower */
+  top: 56px; /* Position flat symbol lower */
 }
 
 .indicator-symbol:last-child {
@@ -99,13 +99,13 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 30px;
+  width: 45px;
   gap: 2px;
 }
 
 .pedal-position {
-  width: 30px;
-  height: 25px;
+  width: 45px;
+  height: 35px;
   position: relative;
   display: flex;
   align-items: center;
@@ -124,8 +124,8 @@
 }
 
 .position-marker {
-  width: 3px;
-  height: 16px;
+  width: 4px;
+  height: 20px;
   background: rgba(255, 255, 255, 0.25);
   border-radius: 2px;
   position: relative;
@@ -134,17 +134,17 @@
 }
 
 .pedal-position.active .position-marker {
-  width: 4px;
-  height: 20px;
+  width: 5px;
+  height: 26px;
   background: #9c6ade;
   box-shadow: 0 0 8px rgba(156, 106, 222, 0.5);
 }
 
 .pedal-letter {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
-  margin-top: 10px;
+  margin-top: 12px;
   text-align: center;
   letter-spacing: 0.5px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -154,21 +154,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 80px;
+  height: 107px;
   justify-content: center;
 }
 
 .separator-line {
   width: 2px;
-  height: 60px;
+  height: 80px;
   background: rgba(255, 255, 255, 0.2);
 }
 
 .diagram-instructions {
   text-align: center;
-  font-size: 11px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.3);
-  margin-top: 15px;
+  margin-top: 20px;
   font-weight: 400;
   letter-spacing: 0.3px;
 }

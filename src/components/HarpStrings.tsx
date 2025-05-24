@@ -9,18 +9,15 @@ interface HarpStringsProps {
   onStringPlay: (note: string, octave: number) => void
   onGlissando: (notes: Array<{note: string, octave: number}>) => void
   hoverMode?: boolean
-  onRangeChange?: (range: HarpRange) => void
 }
 
-function HarpStrings({ range, pedalPositions, onStringPlay, onRangeChange, hoverMode = false }: HarpStringsProps) {
+function HarpStrings({ range, pedalPositions, onStringPlay, hoverMode = false }: HarpStringsProps) {
   const [strings, setStrings] = useState<HarpString[]>(() => generateHarpStrings(range))
   const [activeStrings, setActiveStrings] = useState<Set<number>>(new Set())
   const containerRef = useRef<HTMLDivElement>(null)
   const isPointerDownRef = useRef(false)
   const lastPlayedStringRef = useRef<number>(-1)
   const touchMapRef = useRef<Map<number, number>>(new Map()) // pointerId -> stringIndex
-  const swipeStartXRef = useRef<number>(0)
-  const swipeStartTimeRef = useRef<number>(0)
 
   useEffect(() => {
     setStrings(generateHarpStrings(range))
@@ -65,10 +62,6 @@ function HarpStrings({ range, pedalPositions, onStringPlay, onRangeChange, hover
 
   const handlePointerDown = (e: ReactPointerEvent) => {
     e.preventDefault()
-    
-    // Track swipe start
-    swipeStartXRef.current = e.clientX
-    swipeStartTimeRef.current = Date.now()
     
     // In hover mode, don't handle pointer down for mouse (only touch devices)
     if (hoverMode && e.pointerType === 'mouse') {
@@ -133,28 +126,6 @@ function HarpStrings({ range, pedalPositions, onStringPlay, onRangeChange, hover
 
   const handlePointerUp = (e: ReactPointerEvent) => {
     e.preventDefault()
-    
-    // Check for swipe gesture
-    if (onRangeChange && touchMapRef.current.size === 1) {
-      const swipeEndX = e.clientX
-      const swipeDistance = swipeEndX - swipeStartXRef.current
-      const swipeTime = Date.now() - swipeStartTimeRef.current
-      const swipeVelocity = Math.abs(swipeDistance) / swipeTime
-      
-      // Detect horizontal swipe (threshold: 50px distance and 0.3px/ms velocity)
-      if (Math.abs(swipeDistance) > 50 && swipeVelocity > 0.3) {
-        const ranges: HarpRange[] = ['low', 'middle', 'high', 'full']
-        const currentIndex = ranges.indexOf(range)
-        
-        if (swipeDistance > 0 && currentIndex > 0) {
-          // Swipe right - go to lower range
-          onRangeChange(ranges[currentIndex - 1])
-        } else if (swipeDistance < 0 && currentIndex < ranges.length - 1) {
-          // Swipe left - go to higher range
-          onRangeChange(ranges[currentIndex + 1])
-        }
-      }
-    }
     
     // Remove from touch map
     touchMapRef.current.delete(e.pointerId)
