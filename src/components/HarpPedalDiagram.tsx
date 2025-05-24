@@ -31,7 +31,6 @@ function HarpPedalDiagram({ pedalPositions, onPedalChange, onPresetSelect, readO
           </div>
         )}
         <div className="pedal-columns">
-
           {pedals.map(pedal => (
             <div 
               key={pedal} 
