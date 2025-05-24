@@ -22,6 +22,7 @@ const initialPedals: PedalPositions = {
 function App() {
   const [pedalPositions, setPedalPositions] = useState<PedalPositions>(initialPedals)
   const [currentRange, setCurrentRange] = useState<HarpRange>('middle') // Start with middle range for better mobile experience
+  const [isHoverMode, setIsHoverMode] = useState(false)
   const audioEngine = useAudioEngine()
 
   useEffect(() => {
@@ -70,6 +71,20 @@ function App() {
             currentRange={currentRange}
             onRangeChange={setCurrentRange}
           />
+          
+          {/* Show hover toggle only on desktop */}
+          {window.innerWidth >= 768 && (
+            <label className="hover-toggle-container">
+              <input 
+                type="checkbox" 
+                checked={isHoverMode}
+                onChange={(e) => setIsHoverMode(e.target.checked)}
+                className="hover-checkbox"
+              />
+              <span className="hover-slider"></span>
+              <span className="hover-label">{isHoverMode ? 'Hover' : 'Click'}</span>
+            </label>
+          )}
         </div>
       </div>
       
@@ -79,6 +94,7 @@ function App() {
           pedalPositions={pedalPositions}
           onStringPlay={handleStringPlay}
           onGlissando={handleGlissando}
+          hoverMode={isHoverMode}
         />
       </div>
       

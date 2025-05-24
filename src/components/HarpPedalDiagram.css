@@ -36,32 +36,6 @@
   gap: 10px;
 }
 
-.position-indicators {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 80px;
-  margin-right: 5px;
-}
-
-.indicator-item {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 25px;
-  position: relative;
-  padding-right: 8px;
-}
-
-
-.indicator-symbol {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 600;
-  min-width: 16px;
-  text-align: center;
-}
-
 .pedal-columns {
   display: flex;
   gap: 15px;
@@ -73,11 +47,34 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(25px + 14.5px);
+  top: 39.5px; /* (25px + 2px gap) + 12.5px = 39.5px to center of middle position */
   height: 1px;
   background: rgba(255, 255, 255, 0.3);
   z-index: 1;
 }
+
+.position-indicators {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80px;
+  margin-right: 5px;
+  width: 20px;
+}
+
+.indicator-symbol {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  text-align: right;
+  padding-right: 8px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* REMOVED .horizontal-line - it was creating the duplicate line! */
 
 .pedal-column {
   display: flex;
@@ -85,6 +82,7 @@
   align-items: center;
   position: relative;
   width: 30px;
+  gap: 2px;
 }
 
 .pedal-position {
@@ -96,7 +94,6 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 2px 0;
 }
 
 .pedal-position.readonly {
@@ -107,17 +104,6 @@
   background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
   border-radius: 8px;
 }
-
-.pedal-position:not(.readonly):hover .position-symbol {
-  color: rgba(255, 255, 255, 0.7);
-  transform: scale(1.1);
-}
-
-
-.horizontal-line {
-  display: none;
-}
-
 
 .position-marker {
   width: 3px;
@@ -145,7 +131,6 @@
   letter-spacing: 0.5px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
-
 
 .foot-separator {
   display: flex;
@@ -188,64 +173,46 @@
   }
   
   .pedal-columns {
-    gap: 12px;
+    gap: 10px;
   }
   
   .pedal-column {
-    width: 45px;
+    width: 35px;
   }
   
   .pedal-position {
-    width: 45px;
+    width: 35px;
     height: 35px;
-    margin: 3px 0;
   }
   
   .position-indicators {
-    height: 90px;
+    height: 110px;
   }
   
   .indicator-symbol {
     font-size: 18px;
+    height: 35px;
   }
   
-    
   .pedal-letter {
     font-size: 16px;
-    font-weight: 600;
   }
   
-  .position-line {
-    width: 3px;
-    height: 14px;
+  .foot-separator {
+    height: 110px;
   }
-  
-  .position-line.through {
-    height: 20px;
+}
+
+@media (max-width: 768px) {
+  .pedal-columns::before {
+    top: 54.5px; /* (35px + 2px gap) + 17.5px = 54.5px */
   }
-  
-  .position-symbol {
-    font-size: 28px;
-    font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .pedal-columns::before {
+    top: 32px; /* (20px + 2px gap) + 10px = 32px */
   }
-  
-  .pedal-position.flat .position-symbol {
-    top: -24px;
-  }
-  
-  .pedal-position.sharp .position-symbol {
-    bottom: -24px;
-    top: auto;
-  }
-  
-  .pedal-position.active .position-symbol {
-    font-size: 30px;
-  }
-  
-  .pedal-position.natural .position-symbol {
-    top: -24px;
-  }
-  
 }
 
 @media (max-width: 480px) {
@@ -271,11 +238,20 @@
     height: 20px;
   }
   
-  .horizontal-line {
-    width: 28px;
+  .position-indicators {
+    height: 66px;
+  }
+  
+  .indicator-symbol {
+    font-size: 14px;
+    height: 20px;
   }
   
   .pedal-letter {
     font-size: 14px;
+  }
+  
+  .foot-separator {
+    height: 66px;
   }
 }

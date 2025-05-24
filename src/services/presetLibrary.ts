@@ -153,13 +153,13 @@ export const presetLibrary: CategorizedPreset[] = [
   {
     name: 'C♯7',
     category: 'Dominant 7th/9th',
-    pedals: { D: 'sharp', C: 'sharp', B: 'natural', E: 'sharp', F: 'sharp', G: 'sharp', A: 'sharp' },
+    pedals: { D: 'sharp', C: 'sharp', B: 'natural', E: 'sharp', F: 'natural', G: 'sharp', A: 'sharp' },
     produces: 'C♯ dominant 7th chord'
   },
   {
     name: 'D♭7/D♭9',
     category: 'Dominant 7th/9th',
-    pedals: { D: 'flat', C: 'natural', B: 'natural', E: 'flat', F: 'natural', G: 'flat', A: 'flat' },
+    pedals: { D: 'flat', C: 'flat', B: 'natural', E: 'flat', F: 'natural', G: 'flat', A: 'flat' },
     produces: 'D♭ dominant 7th chord'
   },
   {
@@ -171,7 +171,7 @@ export const presetLibrary: CategorizedPreset[] = [
   {
     name: 'E♭7/E♭9',
     category: 'Dominant 7th/9th',
-    pedals: { D: 'natural', C: 'natural', B: 'flat', E: 'flat', F: 'natural', G: 'natural', A: 'flat' },
+    pedals: { D: 'flat', C: 'natural', B: 'flat', E: 'flat', F: 'natural', G: 'natural', A: 'flat' },
     produces: 'E♭ dominant 7th chord'
   },
   {
@@ -201,7 +201,7 @@ export const presetLibrary: CategorizedPreset[] = [
   {
     name: 'G7/G9',
     category: 'Dominant 7th/9th',
-    pedals: { D: 'natural', C: 'natural', B: 'natural', E: 'natural', F: 'sharp', G: 'natural', A: 'natural' },
+    pedals: { D: 'natural', C: 'natural', B: 'natural', E: 'natural', F: 'natural', G: 'natural', A: 'natural' },
     produces: 'G dominant 7th chord'
   },
   {
@@ -219,7 +219,7 @@ export const presetLibrary: CategorizedPreset[] = [
   {
     name: 'A7/A9',
     category: 'Dominant 7th/9th',
-    pedals: { D: 'natural', C: 'sharp', B: 'natural', E: 'natural', F: 'sharp', G: 'sharp', A: 'natural' },
+    pedals: { D: 'natural', C: 'sharp', B: 'natural', E: 'natural', F: 'sharp', G: 'natural', A: 'natural' },
     produces: 'A dominant 7th chord'
   },
   {
@@ -318,7 +318,7 @@ export const presetLibrary: CategorizedPreset[] = [
   {
     name: 'G aug',
     category: 'Augmented',
-    pedals: { D: 'natural', C: 'natural', B: 'natural', E: 'natural', F: 'natural', G: 'natural', A: 'natural' },
+    pedals: { D: 'sharp', C: 'natural', B: 'natural', E: 'flat', F: 'natural', G: 'natural', A: 'natural' },
     produces: 'G augmented triad'
   },
   {

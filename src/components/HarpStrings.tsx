@@ -8,9 +8,10 @@ interface HarpStringsProps {
   pedalPositions: PedalPositions
   onStringPlay: (note: string, octave: number) => void
   onGlissando: (notes: Array<{note: string, octave: number}>) => void
+  hoverMode?: boolean
 }
 
-function HarpStrings({ range, pedalPositions, onStringPlay }: HarpStringsProps) {
+function HarpStrings({ range, pedalPositions, onStringPlay, hoverMode = false }: HarpStringsProps) {
   const [strings, setStrings] = useState<HarpString[]>(() => generateHarpStrings(range))
   const [activeStrings, setActiveStrings] = useState<Set<number>>(new Set())
   const containerRef = useRef<HTMLDivElement>(null)
@@ -61,6 +62,11 @@ function HarpStrings({ range, pedalPositions, onStringPlay }: HarpStringsProps) 
 
   const handlePointerDown = (e: ReactPointerEvent) => {
     e.preventDefault()
+    
+    // In hover mode, don't handle pointer down for mouse (only touch devices)
+    if (hoverMode && e.pointerType === 'mouse') {
+      return
+    }
     
     // Get the element under the pointer
     const element = document.elementFromPoint(e.clientX, e.clientY)
@@ -150,6 +156,7 @@ function HarpStrings({ range, pedalPositions, onStringPlay }: HarpStringsProps) 
           <div
             key={index}
             className={`harp-string ${string.color} ${activeStrings.has(index) ? 'active' : ''}`}
+            onMouseEnter={hoverMode ? () => playString(index) : undefined}
           >
             <div className="string-line" />
             {(index === 0 || index === strings.length - 1 || index % 7 === 0) && (

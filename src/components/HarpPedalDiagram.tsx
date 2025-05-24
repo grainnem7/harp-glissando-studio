@@ -13,39 +13,34 @@ const leftFootPedals: PedalNote[] = ['D', 'C', 'B']
 const rightFootPedals: PedalNote[] = ['E', 'F', 'G', 'A']
 
 function HarpPedalDiagram({ pedalPositions, onPedalChange, onPresetSelect, readOnly = false }: HarpPedalDiagramProps) {
-
+  
   const handlePedalClick = (pedal: PedalNote, position: PedalPosition) => {
     if (readOnly) return
     onPedalChange(pedal, position)
   }
-
+  
   const renderPedalGroup = (pedals: PedalNote[], groupName: string, showIndicators: boolean = false) => (
     <div className="pedal-group">
       <div className="pedal-group-label">{groupName}</div>
       <div className="pedal-row">
         {showIndicators && (
           <div className="position-indicators">
-            <div className="indicator-item sharp">
-              <span className="indicator-symbol">♯</span>
-            </div>
-            <div className="indicator-item natural">
-              <span className="indicator-symbol">♮</span>
-            </div>
-            <div className="indicator-item flat">
-              <span className="indicator-symbol">♭</span>
-            </div>
+            <div className="indicator-symbol sharp">♯</div>
+            <div className="indicator-symbol natural">♮</div>
+            <div className="indicator-symbol flat">♭</div>
           </div>
         )}
         <div className="pedal-columns">
+
           {pedals.map(pedal => (
             <div 
               key={pedal} 
               className="pedal-column"
             >
-              {/* Flat position (top) */}
+              {/* Sharp position (top) */}
               <div 
-                className={`pedal-position flat ${pedalPositions[pedal] === 'flat' ? 'active' : ''} ${readOnly ? 'readonly' : ''}`}
-                onClick={() => handlePedalClick(pedal, 'flat')}
+                className={`pedal-position sharp ${pedalPositions[pedal] === 'sharp' ? 'active' : ''} ${readOnly ? 'readonly' : ''}`}
+                onClick={() => handlePedalClick(pedal, 'sharp')}
               >
                 <div className="position-marker" />
               </div>
@@ -55,14 +50,13 @@ function HarpPedalDiagram({ pedalPositions, onPedalChange, onPresetSelect, readO
                 className={`pedal-position natural ${pedalPositions[pedal] === 'natural' ? 'active' : ''} ${readOnly ? 'readonly' : ''}`}
                 onClick={() => handlePedalClick(pedal, 'natural')}
               >
-                <div className="horizontal-line" />
                 <div className="position-marker" />
               </div>
               
-              {/* Sharp position (bottom) */}
+              {/* Flat position (bottom) */}
               <div 
-                className={`pedal-position sharp ${pedalPositions[pedal] === 'sharp' ? 'active' : ''} ${readOnly ? 'readonly' : ''}`}
-                onClick={() => handlePedalClick(pedal, 'sharp')}
+                className={`pedal-position flat ${pedalPositions[pedal] === 'flat' ? 'active' : ''} ${readOnly ? 'readonly' : ''}`}
+                onClick={() => handlePedalClick(pedal, 'flat')}
               >
                 <div className="position-marker" />
               </div>
@@ -75,7 +69,7 @@ function HarpPedalDiagram({ pedalPositions, onPedalChange, onPresetSelect, readO
       </div>
     </div>
   )
-
+  
   return (
     <div className="harp-pedal-diagram">
       <div className="diagram-container">
