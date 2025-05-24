@@ -52,18 +52,24 @@
 
 @media (max-width: 768px) {
   .scale-display {
-    padding: 15px;
-    margin: 10px 0;
+    padding: 12px 15px;
+    margin: 0;
   }
 
   .scale-display h3 {
-    font-size: 14px;
-    margin-bottom: 12px;
+    font-size: 13px;
+    margin-bottom: 8px;
   }
 
   .scale-canvas {
     max-width: 100%;
-    min-height: 120px;
+    min-height: 100px;
+  }
+  
+  .preset-name-display {
+    font-size: 12px;
+    padding: 3px 10px;
+    margin-top: 8px;
   }
 }
 

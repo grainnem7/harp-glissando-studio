@@ -24,3 +24,24 @@ export interface GlissandoPreset {
   pedals: PedalPositions
   description?: string
 }
+
+// Lever Harp Types
+export type HarpMode = 'pedal' | 'lever'
+
+export interface LeverHarpString extends HarpString {
+  baseNote: string
+  leverEngaged: boolean
+  stringIndex: number
+}
+
+export interface LeverHarpState {
+  // Map of string index to lever state (true = engaged/raised)
+  levers: boolean[]
+}
+
+export interface LeverHarpPreset {
+  name: string
+  description?: string
+  // Array of lever states for each string
+  leverPattern: boolean[]
+}

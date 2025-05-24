@@ -1,0 +1,48 @@
+.lever-harp-diagram {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border-radius: 16px;
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  overflow-x: auto;
+}
+
+.lever-diagram-canvas {
+  display: block;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  min-width: 800px;
+}
+
+/* Desktop: make diagram shorter since we use horizontal layout */
+@media (min-width: 769px) {
+  .lever-diagram-canvas {
+    height: 250px !important;
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .lever-harp-diagram {
+    padding: 10px;
+    margin: 5px 0;
+  }
+  
+  .lever-diagram-canvas {
+    min-width: 600px;
+    height: 300px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .lever-harp-diagram {
+    padding: 8px;
+  }
+  
+  .lever-diagram-canvas {
+    min-width: 500px;
+    height: 250px !important;
+  }
+}

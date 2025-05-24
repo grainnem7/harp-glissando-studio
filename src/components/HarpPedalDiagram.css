@@ -181,102 +181,116 @@
 
 @media (max-width: 768px) {
   .harp-pedal-diagram {
-    padding: 15px;
-    margin: 5px 0;
+    padding: 12px 10px;
+    margin: 0;
   }
   
   .diagram-container {
     gap: 15px;
-    min-height: 120px;
+    min-height: 90px;
   }
   
   .pedal-columns {
-    gap: 10px;
+    gap: 12px;
   }
   
   .pedal-column {
-    width: 35px;
+    width: 38px;
+    gap: 3px;
   }
   
   .pedal-position {
-    width: 35px;
-    height: 35px;
+    width: 38px;
+    height: 28px;
   }
   
   .position-indicators {
-    height: 109px;
-    position: relative;
+    height: 88px;
+    margin-right: 5px;
   }
   
   .indicator-symbol {
-    font-size: 22px;
-    height: 35px;
-    position: absolute;
-    width: 100%;
+    font-size: 20px;
+    height: 28px;
   }
   
   .indicator-symbol.sharp {
-    top: -16px;
+    top: -12px;
   }
 
   .indicator-symbol.natural {
-    top: 19px;
+    top: 18px;
   }
 
   .indicator-symbol.flat {
-    top: 58px;
-  }
-  
-  .indicator-symbol:last-child {
-    margin-bottom: 0;
+    top: 48px;
   }
   
   .pedal-letter {
-    font-size: 16px;
+    font-size: 14px;
+    margin-top: 8px;
   }
   
   .foot-separator {
-    height: 110px;
+    height: 88px;
+  }
+  
+  .separator-line {
+    height: 70px;
   }
   
   .pedal-columns::before {
-    top: 54.5px; /* (35px + 2px gap) + 17.5px = 54.5px */
+    top: 44px;
+  }
+  
+  .pedal-group-label {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .position-marker {
+    width: 3px;
+    height: 16px;
+  }
+  
+  .pedal-position.active .position-marker {
+    width: 4px;
+    height: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .harp-pedal-diagram {
-    padding: 12px;
+    padding: 10px 8px;
   }
   
   .diagram-container {
-    gap: 10px;
-    min-height: 100px;
+    gap: 12px;
+    min-height: 80px;
   }
   
   .pedal-columns {
-    gap: 8px;
+    gap: 10px;
   }
   
   .pedal-column {
-    width: 28px;
+    width: 32px;
+    gap: 2px;
   }
   
   .pedal-position {
-    width: 28px;
-    height: 20px;
+    width: 32px;
+    height: 24px;
   }
   
   .position-indicators {
-    height: 64px;
-    position: relative;
+    height: 74px;
+    margin-right: 4px;
   }
   
   .indicator-symbol {
     font-size: 18px;
-    height: 20px;
-    position: absolute;
-    width: 100%;
+    height: 24px;
   }
   
   .indicator-symbol.sharp {
@@ -284,27 +298,33 @@
   }
 
   .indicator-symbol.natural {
-    top: 12px;
+    top: 15px;
   }
 
   .indicator-symbol.flat {
-    top: 34px;
-  }
-  
-  .indicator-symbol:last-child {
-    margin-bottom: 0;
+    top: 40px;
   }
   
   .pedal-letter {
-    font-size: 14px;
+    font-size: 12px;
+    margin-top: 6px;
   }
   
   .foot-separator {
-    height: 66px;
+    height: 74px;
+  }
+  
+  .separator-line {
+    height: 60px;
   }
 
   .pedal-columns::before {
-    top: 32px; /* (20px + 2px gap) + 10px = 32px */
+    top: 37px;
+  }
+  
+  .diagram-instructions {
+    font-size: 10px;
+    margin-top: 12px;
   }
 }
 

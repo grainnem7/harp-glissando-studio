@@ -79,11 +79,19 @@ export function useAudioEngine() {
     }
   }, [initializeAudio, isAudioStarted])
 
-  const playNote = (note: string, octave: number, pedalPositions: PedalPositions) => {
+  const playNote = (note: string, octave: number, pedalPositionsOrFrequency: PedalPositions | number) => {
     if (!synthRef.current || !isLoaded) return
 
     try {
-      const { frequency } = applyPedalToNote(note, octave, pedalPositions)
+      let frequency: number
+      
+      // Check if we're given a direct frequency (lever harp mode) or need to calculate it (pedal harp mode)
+      if (typeof pedalPositionsOrFrequency === 'number') {
+        frequency = pedalPositionsOrFrequency
+      } else {
+        const result = applyPedalToNote(note, octave, pedalPositionsOrFrequency)
+        frequency = result.frequency
+      }
       
       // Ensure audio context is running
       if (Tone.context.state !== 'running') {
@@ -103,7 +111,7 @@ export function useAudioEngine() {
     }
   }
 
-  const playGlissando = (notes: Array<{note: string, octave: number}>, pedalPositions: PedalPositions) => {
+  const playGlissando = (notes: Array<{note: string, octave: number, frequency?: number}>, pedalPositions?: PedalPositions) => {
     if (!synthRef.current || !isLoaded || notes.length === 0) return
 
     try {
@@ -116,7 +124,20 @@ export function useAudioEngine() {
       const timePerNote = 0.03 // Faster glissando - 30ms between notes
 
       notes.forEach((note, index) => {
-        const { frequency } = applyPedalToNote(note.note, note.octave, pedalPositions)
+        let frequency: number
+        
+        // Check if frequency is provided directly (lever harp mode)
+        if (note.frequency) {
+          frequency = note.frequency
+        } else if (pedalPositions) {
+          // Calculate frequency from pedal positions (pedal harp mode)
+          const result = applyPedalToNote(note.note, note.octave, pedalPositions)
+          frequency = result.frequency
+        } else {
+          // Fallback to A440 if no frequency info
+          frequency = 440
+        }
+        
         const time = now + (index * timePerNote)
         const velocity = 0.5 + Math.random() * 0.2
         

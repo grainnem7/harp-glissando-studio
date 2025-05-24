@@ -1,4 +1,4 @@
-import { HarpString, PedalPositions } from '../types'
+import { HarpString, PedalPositions, LeverHarpString } from '../types'
 
 const noteOrder = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
@@ -165,3 +165,364 @@ export function getScaleFromPedals(pedalPositions: PedalPositions): string[] {
   
   return scale
 }
+
+// Lever Harp Functions
+export function generateLeverHarpStrings(): LeverHarpString[] {
+  const strings: LeverHarpString[] = []
+  
+  // Standard 34-string lever harp tuning in E♭ major
+  // Starting from C2 to A6
+  const leverHarpTuning = [
+    { note: 'C', octave: 2 },
+    { note: 'D', octave: 2 },
+    { note: 'E', octave: 2, flat: true }, // E♭
+    { note: 'F', octave: 2 },
+    { note: 'G', octave: 2 },
+    { note: 'A', octave: 2, flat: true }, // A♭
+    { note: 'B', octave: 2, flat: true }, // B♭
+    // Continue pattern for all octaves
+  ]
+  
+  // Generate all 34 strings from C2 to A6
+  let stringIndex = 0
+  for (let octave = 2; octave <= 6; octave++) {
+    const notes = octave === 6 ? ['C', 'D', 'E', 'F', 'G', 'A'] : noteOrder
+    
+    for (const note of notes) {
+      // In E♭ major tuning, E, A, and B are flat
+      const isFlat = ['E', 'A', 'B'].includes(note)
+      const baseNote = isFlat ? `${note}b` : note
+      const color = note === 'C' ? 'red' : note === 'F' ? 'navy' : 'neutral'
+      
+      // Calculate base frequency (with flat if needed)
+      let frequencyKey = `${note}${octave}`
+      if (isFlat) {
+        if (note === 'E') {
+          frequencyKey = `D#${octave}`
+        } else if (note === 'A') {
+          frequencyKey = `G#${octave}`
+        } else if (note === 'B') {
+          frequencyKey = `A#${octave}`
+        }
+      }
+      
+      const baseFrequency = frequencies[frequencyKey] || 440
+      
+      strings.push({
+        note: baseNote,
+        baseNote: baseNote,
+        octave,
+        frequency: baseFrequency,
+        color,
+        position: stringIndex,
+        leverEngaged: false,
+        stringIndex
+      })
+      
+      stringIndex++
+      
+      // Stop at A6 (34 strings total)
+      if (octave === 6 && note === 'A') break
+    }
+  }
+  
+  return strings
+}
+
+export function calculateLeverHarpPitch(string: LeverHarpString): { note: string, frequency: number } {
+  if (string.leverEngaged) {
+    // Raise by one semitone
+    const baseKey = string.baseNote.includes('b') 
+      ? string.baseNote.replace('b', '') 
+      : string.baseNote
+    
+    let raisedNote = string.baseNote
+    let frequencyKey = ''
+    
+    // Handle special cases when raising flats
+    if (string.baseNote.includes('b')) {
+      // E♭ -> E♮, A♭ -> A♮, B♭ -> B♮
+      raisedNote = baseKey
+      frequencyKey = `${baseKey}${string.octave}`
+    } else {
+      // Natural notes get raised to sharps
+      if (baseKey === 'B') {
+        raisedNote = 'C'
+        frequencyKey = `C${string.octave + 1}`
+      } else if (baseKey === 'E') {
+        raisedNote = 'F'
+        frequencyKey = `F${string.octave}`
+      } else {
+        raisedNote = `${baseKey}#`
+        frequencyKey = `${baseKey}#${string.octave}`
+      }
+    }
+    
+    const frequency = frequencies[frequencyKey] || string.frequency * Math.pow(2, 1/12)
+    return { note: raisedNote, frequency }
+  }
+  
+  return { note: string.baseNote, frequency: string.frequency }
+}
+
+// All possible major and minor scales for lever harp
+export const leverHarpScales = [
+  // Major scales (possible with lever harp)
+  {
+    name: 'E♭ Major',
+    description: 'Standard tuning (no levers)',
+    leverPattern: new Array(34).fill(false),
+    type: 'major'
+  },
+  {
+    name: 'F Major',
+    description: 'One lever (B♭ to B♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Only engage B strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (note === 'B') pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'G Major',
+    description: 'Two levers (E♭ to E♮, B♭ to B♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E and B strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'B'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'A♭ Major',
+    description: 'No additional levers',
+    leverPattern: new Array(34).fill(false),
+    type: 'major'
+  },
+  {
+    name: 'B♭ Major',
+    description: 'One lever (E♭ to E♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (note === 'E') pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'C Major',
+    description: 'All naturals',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E, A, B strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  {
+    name: 'D Major',
+    description: 'Five levers',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E, A, B, F, C strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B', 'F', 'C'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'major'
+  },
+  
+  // Minor scales (possible with lever harp)
+  {
+    name: 'C Minor',
+    description: 'Two levers (A♭ to A♮, B♭ to B♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage A and B strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'B'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'D Minor',
+    description: 'Three levers (E♭ to E♮, A♭ to A♮, B♭ to B♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E, A, B strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'E♭ Minor',
+    description: 'One lever (A♭ to A♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage A strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (note === 'A') pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'F Minor',
+    description: 'Two levers (A♭ to A♮, B♭ to B♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage A and B strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['A', 'B'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'G Minor',
+    description: 'One lever (E♭ to E♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (note === 'E') pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  },
+  {
+    name: 'A Minor',
+    description: 'Three levers (E♭ to E♮, A♭ to A♮, B♭ to B♮)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E, A, B strings
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B'].includes(note)) pattern[i] = true
+      }
+      return pattern
+    })(),
+    type: 'minor'
+  }
+]
+
+// Original presets for backward compatibility
+export const leverHarpPresets = [
+  {
+    name: 'E♭ Major',
+    description: 'Standard lever harp tuning',
+    leverPattern: new Array(34).fill(false) // All levers down
+  },
+  {
+    name: 'C Major',
+    description: 'All naturals',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage levers for E, A, and B strings to make them natural
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B'].includes(note)) {
+          pattern[i] = true
+        }
+      }
+      return pattern
+    })()
+  },
+  {
+    name: 'G Major',
+    description: 'One sharp (F#)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage levers for E, A, B (to natural) and F (to sharp)
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B', 'F'].includes(note)) {
+          pattern[i] = true
+        }
+      }
+      return pattern
+    })()
+  },
+  {
+    name: 'D Major',
+    description: 'Two sharps (F#, C#)',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage levers for E, A, B (to natural) and F, C (to sharp)
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B', 'F', 'C'].includes(note)) {
+          pattern[i] = true
+        }
+      }
+      return pattern
+    })()
+  },
+  {
+    name: 'A♭ Major',
+    description: 'Four flats',
+    leverPattern: new Array(34).fill(false) // E♭, A♭, B♭ already flat, D♭ not possible
+  },
+  {
+    name: 'C Pentatonic',
+    description: 'C D E G A',
+    leverPattern: (() => {
+      const pattern = new Array(34).fill(false)
+      // Engage E, A, B to natural
+      for (let i = 0; i < 34; i++) {
+        const noteIndex = i % 7
+        const note = noteOrder[noteIndex]
+        if (['E', 'A', 'B'].includes(note)) {
+          pattern[i] = true
+        }
+      }
+      return pattern
+    })()
+  }
+]
