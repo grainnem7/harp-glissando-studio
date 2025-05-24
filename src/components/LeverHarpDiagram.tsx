@@ -65,20 +65,17 @@ const LeverHarpDiagram: React.FC<LeverHarpDiagramProps> = ({ strings, highlighte
     strings.forEach((string, stringIndex) => {
       const x = leftMargin + (stringIndex * noteSpacing) + (noteSpacing / 2)
       
-      // Display chromatic sequence C2 to A6 (34 strings total)
-      // This represents the chromatic progression regardless of actual tuning
-      const chromaticNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-      const startOctave = 2
-      const totalStrings = 34
+      // Get the actual pitch based on lever state
+      const { note: actualNote } = calculateLeverHarpPitch(string)
+      const octave = string.octave
       
-      // Calculate which note and octave this string represents in chromatic sequence
-      const chromaticIndex = stringIndex % 7
-      const octaveOffset = Math.floor(stringIndex / 7)
-      const note = chromaticNotes[chromaticIndex]
-      const octave = startOctave + octaveOffset
+      // Extract base note and accidental
+      const baseNote = actualNote.replace(/[♯♭b#]/g, '')
+      const hasSharp = actualNote.includes('♯') || actualNote.includes('#')
+      const hasFlat = actualNote.includes('♭') || actualNote.includes('b')
       
       // Determine if we need a clef change at middle C (C4)
-      const isMiddleC = note === 'C' && octave === 4
+      const isMiddleC = baseNote === 'C' && octave === 4
       if (isMiddleC && currentClef === 'bass' && x > lastClefX + 60) {
         // Switch to treble clef
         currentClef = 'treble'
@@ -112,7 +109,7 @@ const LeverHarpDiagram: React.FC<LeverHarpDiagramProps> = ({ strings, highlighte
           'A': 2.5,  // A is space above second line
           'B': 2,    // B is middle line
         }
-        yPos = bassPositions[note]
+        yPos = bassPositions[baseNote]
         
         // Adjust for octave (going down = higher position numbers)
         const octaveDiff = 3 - octave  // Bass clef reference is octave 3
@@ -128,7 +125,7 @@ const LeverHarpDiagram: React.FC<LeverHarpDiagramProps> = ({ strings, highlighte
           'A': 2.5,  // A is space above G
           'B': 2,    // B is middle line
         }
-        yPos = treblePositions[note]
+        yPos = treblePositions[baseNote]
         
         // Adjust for octave
         const octaveDiff = octave - 4  // Treble clef reference is octave 4
@@ -147,7 +144,15 @@ const LeverHarpDiagram: React.FC<LeverHarpDiagramProps> = ({ strings, highlighte
         ctx.restore()
       }
       
-      // No accidentals needed for chromatic natural note display
+      // Draw accidental if needed
+      if (hasSharp || hasFlat) {
+        ctx.save()
+        ctx.font = '14px sans-serif'
+        ctx.fillStyle = highlightedString === stringIndex ? '#9c6ade' : '#e0e0e0'
+        const accidental = hasSharp ? '♯' : '♭'
+        ctx.fillText(accidental, x - 12, y + 5)
+        ctx.restore()
+      }
       
       // Draw note head
       ctx.save()
