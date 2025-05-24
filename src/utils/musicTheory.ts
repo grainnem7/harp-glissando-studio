@@ -22,17 +22,47 @@ const frequencies: { [key: string]: number } = {
   'C8': 4186.01
 }
 
-export function generateHarpStrings(): HarpString[] {
+export type HarpRange = 'full' | 'upper' | 'middle' | 'lower' | 'compact'
+
+export function generateHarpStrings(range: HarpRange = 'full'): HarpString[] {
   const strings: HarpString[] = []
   
-  // Standard 47-string harp range: C1 to G7
-  const startOctave = 1
-  const endOctave = 7
+  let startOctave: number
+  let endOctave: number
+  let endNotes: string[]
+  
+  switch (range) {
+    case 'upper':
+      startOctave = 4
+      endOctave = 7
+      endNotes = ['C', 'D', 'E', 'F', 'G']
+      break
+    case 'middle':
+      startOctave = 2
+      endOctave = 5
+      endNotes = noteOrder
+      break
+    case 'lower':
+      startOctave = 1
+      endOctave = 4
+      endNotes = noteOrder
+      break
+    case 'compact':
+      startOctave = 3
+      endOctave = 4
+      endNotes = noteOrder
+      break
+    case 'full':
+    default:
+      startOctave = 1
+      endOctave = 7
+      endNotes = ['C', 'D', 'E', 'F', 'G']
+  }
   
   let position = 0
   
   for (let octave = startOctave; octave <= endOctave; octave++) {
-    const notes = octave === endOctave ? ['C', 'D', 'E', 'F', 'G'] : noteOrder
+    const notes = octave === endOctave ? endNotes : noteOrder
     
     for (const note of notes) {
       const color = note === 'C' ? 'red' : note === 'F' ? 'navy' : 'neutral'
@@ -53,27 +83,65 @@ export function generateHarpStrings(): HarpString[] {
   return strings
 }
 
+export function getRangeDescription(range: HarpRange): string {
+  switch (range) {
+    case 'full': return 'Full Harp (47 strings)'
+    case 'upper': return 'Upper Range (C4-G7)'
+    case 'middle': return 'Middle Range (C2-B5)'
+    case 'lower': return 'Lower Range (C1-B4)'
+    case 'compact': return 'Compact (C3-B4)'
+    default: return 'Full Harp'
+  }
+}
+
 export function applyPedalToNote(note: string, octave: number, pedalPositions: PedalPositions): { note: string, frequency: number } {
   const pedalPosition = pedalPositions[note as keyof PedalPositions]
   if (!pedalPosition) return { note, frequency: frequencies[`${note}${octave}`] || 440 }
   
   let modifiedNote = note
+  let frequencyKey = `${note}${octave}`
   
   switch (pedalPosition) {
     case 'flat':
-      modifiedNote = note + 'b'
+      modifiedNote = note + '♭'
+      // Handle special cases and convert to frequency lookup
+      if (note === 'C') {
+        // C♭ = B
+        frequencyKey = `B${octave - 1}`
+      } else if (note === 'F') {
+        // F♭ = E
+        frequencyKey = `E${octave}`
+      } else {
+        // Convert to sharp equivalent for frequency lookup
+        const flatToSharp: { [key: string]: string } = {
+          'D': 'C#', 'E': 'D#', 'G': 'F#', 'A': 'G#', 'B': 'A#'
+        }
+        const sharpNote = flatToSharp[note]
+        if (sharpNote) {
+          frequencyKey = `${sharpNote}${octave}`
+        }
+      }
       break
     case 'sharp':
-      modifiedNote = note + '#'
+      modifiedNote = note + '♯'
+      // Handle special cases
+      if (note === 'B') {
+        // B♯ = C
+        frequencyKey = `C${octave + 1}`
+      } else if (note === 'E') {
+        // E♯ = F
+        frequencyKey = `F${octave}`
+      } else {
+        frequencyKey = `${note}#${octave}`
+      }
       break
     case 'natural':
     default:
       modifiedNote = note
+      frequencyKey = `${note}${octave}`
   }
   
-  // Convert flats to sharps for frequency lookup
-  const frequencyNote = modifiedNote.replace('b', '#')
-  const frequency = frequencies[`${frequencyNote}${octave}`] || frequencies[`${note}${octave}`] || 440
+  const frequency = frequencies[frequencyKey] || frequencies[`${note}${octave}`] || 440
   
   return { note: modifiedNote, frequency }
 }

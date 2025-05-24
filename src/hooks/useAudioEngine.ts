@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import * as Tone from 'tone'
 import { PedalPositions } from '../types'
 import { applyPedalToNote } from '../utils/musicTheory'
@@ -6,41 +6,69 @@ import { applyPedalToNote } from '../utils/musicTheory'
 export function useAudioEngine() {
   const synthRef = useRef<Tone.PolySynth | null>(null)
   const reverbRef = useRef<Tone.Reverb | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isAudioStarted, setIsAudioStarted] = useState(false)
+
+  const initializeAudio = useCallback(async () => {
+    if (isAudioStarted) return
+    
+    try {
+      // Start Tone.js context
+      await Tone.start()
+      setIsAudioStarted(true)
+      
+      // Preload with a silent note to initialize everything
+      if (synthRef.current) {
+        synthRef.current.triggerAttackRelease(440, '32n', Tone.now(), 0.001)
+      }
+      
+      setIsLoaded(true)
+    } catch (error) {
+      console.error('Failed to initialize audio:', error)
+    }
+  }, [isAudioStarted])
 
   useEffect(() => {
-    // Create reverb
+    // Create reverb with faster generation
     reverbRef.current = new Tone.Reverb({
-      decay: 2.5,
-      wet: 0.3
+      decay: 1.5,
+      wet: 0.2
     }).toDestination()
 
-    // Create polyphonic synth with harp-like properties
+    // Create polyphonic synth optimized for glissando
     synthRef.current = new Tone.PolySynth(Tone.Synth, {
+      maxPolyphony: 12, // Allow more simultaneous notes for overlapping glissando
       oscillator: {
         type: 'triangle'
       },
       envelope: {
-        attack: 0.005,
-        decay: 1.0,
-        sustain: 0.1,
-        release: 2.0
+        attack: 0.001,  // Very fast attack for responsive glissando
+        decay: 0.4,
+        sustain: 0.15,
+        release: 0.8 // Shorter release to prevent note overlap
       },
-      volume: -12
+      volume: -4
     }).connect(reverbRef.current)
 
-    // Start audio context on user interaction
-    const startAudio = async () => {
-      if (Tone.context.state !== 'running') {
-        await Tone.start()
+    // Set minimal latency
+    Tone.context.lookAhead = 0.01 // Reduce lookahead to 10ms
+    Tone.context.updateInterval = 0.01 // Update every 10ms
+
+    // Start audio on any user interaction
+    const startAudio = () => {
+      if (!isAudioStarted) {
+        initializeAudio()
       }
     }
 
-    document.addEventListener('touchstart', startAudio)
-    document.addEventListener('mousedown', startAudio)
+    document.addEventListener('touchstart', startAudio, { once: true })
+    document.addEventListener('mousedown', startAudio, { once: true })
+    document.addEventListener('click', startAudio, { once: true })
 
     return () => {
       document.removeEventListener('touchstart', startAudio)
       document.removeEventListener('mousedown', startAudio)
+      document.removeEventListener('click', startAudio)
       
       if (synthRef.current) {
         synthRef.current.dispose()
@@ -49,35 +77,61 @@ export function useAudioEngine() {
         reverbRef.current.dispose()
       }
     }
-  }, [])
+  }, [initializeAudio, isAudioStarted])
 
   const playNote = (note: string, octave: number, pedalPositions: PedalPositions) => {
-    if (!synthRef.current) return
+    if (!synthRef.current || !isLoaded) return
 
-    const { frequency } = applyPedalToNote(note, octave, pedalPositions)
-    
-    // Play the note with slight randomization for more natural sound
-    const velocity = 0.7 + Math.random() * 0.3
-    synthRef.current.triggerAttackRelease(frequency, '8n', undefined, velocity)
+    try {
+      const { frequency } = applyPedalToNote(note, octave, pedalPositions)
+      
+      // Ensure audio context is running
+      if (Tone.context.state !== 'running') {
+        Tone.start()
+      }
+      
+      // Play with shorter duration for cleaner glissando
+      const velocity = 0.75 + Math.random() * 0.15
+      const duration = '16n' // Shorter notes for better glissando separation
+      synthRef.current.triggerAttackRelease(frequency, duration, '+0', velocity)
+    } catch (error) {
+      console.warn('Audio playback error:', error)
+      // Try to restart audio if there's an error
+      if (!isAudioStarted) {
+        initializeAudio()
+      }
+    }
   }
 
   const playGlissando = (notes: Array<{note: string, octave: number}>, pedalPositions: PedalPositions) => {
-    if (!synthRef.current || notes.length === 0) return
+    if (!synthRef.current || !isLoaded || notes.length === 0) return
 
-    const now = Tone.now()
-    const timePerNote = 0.05 // 50ms between notes
+    try {
+      // Ensure audio context is running
+      if (Tone.context.state !== 'running') {
+        Tone.start()
+      }
 
-    notes.forEach((note, index) => {
-      const { frequency } = applyPedalToNote(note.note, note.octave, pedalPositions)
-      const time = now + (index * timePerNote)
-      const velocity = 0.6 + Math.random() * 0.2
-      
-      synthRef.current!.triggerAttackRelease(frequency, '4n', time, velocity)
-    })
+      const now = Tone.now()
+      const timePerNote = 0.03 // Faster glissando - 30ms between notes
+
+      notes.forEach((note, index) => {
+        const { frequency } = applyPedalToNote(note.note, note.octave, pedalPositions)
+        const time = now + (index * timePerNote)
+        const velocity = 0.6 + Math.random() * 0.2
+        
+        synthRef.current!.triggerAttackRelease(frequency, '8n', time, velocity)
+      })
+    } catch (error) {
+      console.warn('Glissando playback error:', error)
+    }
   }
 
   return {
     playNote,
-    playGlissando
+    playGlissando,
+    isLoaded,
+    isAudioStarted,
+    initializeAudio
   }
 }

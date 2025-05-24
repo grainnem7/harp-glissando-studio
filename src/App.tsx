@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import HarpStrings from './components/HarpStrings'
-import PedalControls from './components/PedalControls'
+import HarpPedalDiagram from './components/HarpPedalDiagram'
 import PresetManager from './components/PresetManager'
-import { PedalPositions, PedalNote } from './types'
+import RangeSelector from './components/RangeSelector'
+import LoadingScreen from './components/LoadingScreen'
+import { PedalPositions, PedalNote, PedalPosition } from './types'
 import { useAudioEngine } from './hooks/useAudioEngine'
+import { HarpRange } from './utils/musicTheory'
 
 const initialPedals: PedalPositions = {
   D: 'natural',
@@ -18,6 +21,7 @@ const initialPedals: PedalPositions = {
 
 function App() {
   const [pedalPositions, setPedalPositions] = useState<PedalPositions>(initialPedals)
+  const [currentRange, setCurrentRange] = useState<HarpRange>('middle') // Start with middle range for better mobile experience
   const audioEngine = useAudioEngine()
 
   useEffect(() => {
@@ -36,7 +40,7 @@ function App() {
     }
   }, [])
 
-  const handlePedalChange = (pedal: PedalNote, position: 'flat' | 'natural' | 'sharp') => {
+  const handlePedalChange = (pedal: PedalNote, position: PedalPosition) => {
     setPedalPositions(prev => ({
       ...prev,
       [pedal]: position
@@ -53,18 +57,32 @@ function App() {
 
   return (
     <div className="app">
+      <LoadingScreen 
+        isLoading={!audioEngine.isLoaded}
+        message={audioEngine.isAudioStarted ? "Loading..." : "Tap to start audio"}
+      />
+      
+      <RangeSelector 
+        currentRange={currentRange}
+        onRangeChange={setCurrentRange}
+      />
+      
       <PresetManager 
         onPresetSelect={setPedalPositions}
         currentPedals={pedalPositions}
       />
+      
       <div className="main-content">
         <HarpStrings 
+          range={currentRange}
+          pedalPositions={pedalPositions}
           onStringPlay={handleStringPlay}
           onGlissando={handleGlissando}
         />
       </div>
+      
       <div className="controls">
-        <PedalControls 
+        <HarpPedalDiagram 
           pedalPositions={pedalPositions}
           onPedalChange={handlePedalChange}
         />

@@ -1,0 +1,62 @@
+.range-selector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(20, 20, 30, 0.9);
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.range-selector label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+}
+
+.range-dropdown {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.range-dropdown:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.range-dropdown:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.range-dropdown option {
+  background: #1a1a2e;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .range-selector {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    width: calc(100% - 20px);
+    justify-content: space-between;
+  }
+  
+  .range-dropdown {
+    flex: 1;
+    max-width: 200px;
+  }
+}
