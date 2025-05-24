@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import HarpStrings from './components/HarpStrings'
 import HarpPedalDiagram from './components/HarpPedalDiagram'
-import PresetManager from './components/PresetManager'
 import RangeSelector from './components/RangeSelector'
 import LoadingScreen from './components/LoadingScreen'
+import ScaleDisplay from './components/ScaleDisplay'
 import { PedalPositions, PedalNote, PedalPosition } from './types'
 import { useAudioEngine } from './hooks/useAudioEngine'
 import { HarpRange } from './utils/musicTheory'
@@ -59,18 +59,19 @@ function App() {
     <div className="app">
       <LoadingScreen 
         isLoading={!audioEngine.isLoaded}
-        message={audioEngine.isAudioStarted ? "Loading..." : "Tap to start audio"}
+        // message={audioEngine.isAudioStarted ? "Loading..." : "Tap to start audio"}
       />
       
-      <RangeSelector 
-        currentRange={currentRange}
-        onRangeChange={setCurrentRange}
-      />
-      
-      <PresetManager 
-        onPresetSelect={setPedalPositions}
-        currentPedals={pedalPositions}
-      />
+      <div className="app-header">
+        <h1 className="app-title">Harp Glissando Studio</h1>
+        
+        <div className="header-controls">
+          <RangeSelector 
+            currentRange={currentRange}
+            onRangeChange={setCurrentRange}
+          />
+        </div>
+      </div>
       
       <div className="main-content">
         <HarpStrings 
@@ -83,6 +84,11 @@ function App() {
       
       <div className="controls">
         <HarpPedalDiagram 
+          pedalPositions={pedalPositions}
+          onPedalChange={handlePedalChange}
+          onPresetSelect={setPedalPositions}
+        />
+        <ScaleDisplay 
           pedalPositions={pedalPositions}
           onPedalChange={handlePedalChange}
         />

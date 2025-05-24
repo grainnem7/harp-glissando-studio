@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 20000;
   color: white;
 }
 
@@ -75,7 +75,7 @@
 .spinner-dot {
   width: 8px;
   height: 8px;
-  background: #4CAF50;
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 50%;
   animation: dot-pulse 1.4s ease-in-out infinite both;
 }

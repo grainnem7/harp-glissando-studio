@@ -1,8 +1,10 @@
 .harp-pedal-diagram {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border-radius: 16px;
   padding: 20px;
   margin: 10px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .diagram-container {
@@ -20,15 +22,61 @@
 }
 
 .pedal-group-label {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 8px;
-  font-weight: 500;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pedal-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.position-indicators {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80px;
+  margin-right: 5px;
+}
+
+.indicator-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 25px;
+  position: relative;
+  padding-right: 8px;
+}
+
+
+.indicator-symbol {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  min-width: 16px;
+  text-align: center;
 }
 
 .pedal-columns {
   display: flex;
   gap: 15px;
+  position: relative;
+}
+
+.pedal-columns::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(25px + 14.5px);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 1;
 }
 
 .pedal-column {
@@ -41,13 +89,14 @@
 
 .pedal-position {
   width: 30px;
-  height: 20px;
+  height: 25px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin: 2px 0;
 }
 
 .pedal-position.readonly {
@@ -55,90 +104,48 @@
 }
 
 .pedal-position:not(.readonly):hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  border-radius: 8px;
 }
 
-.position-line {
-  width: 2px;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.4);
-  position: absolute;
-  transition: all 0.3s ease;
+.pedal-position:not(.readonly):hover .position-symbol {
+  color: rgba(255, 255, 255, 0.7);
+  transform: scale(1.1);
 }
 
-.position-line.through {
-  height: 18px;
-  top: 1px;
-}
 
 .horizontal-line {
-  width: 30px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.6);
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  display: none;
 }
 
-.pedal-position.active .position-line {
-  background: #4CAF50;
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+
+.position-marker {
   width: 3px;
-  height: 14px;
-}
-
-.pedal-position.active.natural .position-line {
-  height: 20px;
-}
-
-.position-symbol {
-  font-size: 10px;
-  position: absolute;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: bold;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  position: relative;
   z-index: 2;
   transition: all 0.3s ease;
 }
 
-.pedal-position.active .position-symbol {
-  color: #4CAF50;
-  text-shadow: 0 0 5px rgba(76, 175, 80, 0.8);
-}
-
-.pedal-position.flat .position-symbol {
-  top: -2px;
-}
-
-.pedal-position.natural .position-symbol {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.pedal-position.sharp .position-symbol {
-  bottom: -2px;
+.pedal-position.active .position-marker {
+  width: 4px;
+  height: 20px;
+  background: #9c6ade;
+  box-shadow: 0 0 8px rgba(156, 106, 222, 0.5);
 }
 
 .pedal-letter {
   font-size: 14px;
-  font-weight: bold;
-  color: white;
-  margin-top: 8px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 10px;
   text-align: center;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.current-note {
-  position: absolute;
-  bottom: -25px;
-  background: rgba(76, 175, 80, 0.9);
-  color: white;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: bold;
-  white-space: nowrap;
-  z-index: 10;
-}
 
 .foot-separator {
   display: flex;
@@ -151,48 +158,124 @@
 .separator-line {
   width: 2px;
   height: 60px;
-  background: rgba(255, 255, 255, 0.4);
-  margin-bottom: 5px;
-}
-
-.separator-label {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: bold;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .diagram-instructions {
   text-align: center;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 10px;
-  font-style: italic;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 15px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.diagram-presets {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
+  .harp-pedal-diagram {
+    padding: 15px;
+    margin: 5px 0;
+  }
+  
+  .diagram-container {
+    gap: 15px;
+    min-height: 120px;
+  }
+  
+  .pedal-columns {
+    gap: 12px;
+  }
+  
+  .pedal-column {
+    width: 45px;
+  }
+  
+  .pedal-position {
+    width: 45px;
+    height: 35px;
+    margin: 3px 0;
+  }
+  
+  .position-indicators {
+    height: 90px;
+  }
+  
+  .indicator-symbol {
+    font-size: 18px;
+  }
+  
+    
+  .pedal-letter {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .position-line {
+    width: 3px;
+    height: 14px;
+  }
+  
+  .position-line.through {
+    height: 20px;
+  }
+  
+  .position-symbol {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  
+  .pedal-position.flat .position-symbol {
+    top: -24px;
+  }
+  
+  .pedal-position.sharp .position-symbol {
+    bottom: -24px;
+    top: auto;
+  }
+  
+  .pedal-position.active .position-symbol {
+    font-size: 30px;
+  }
+  
+  .pedal-position.natural .position-symbol {
+    top: -24px;
+  }
+  
+}
+
+@media (max-width: 480px) {
+  .harp-pedal-diagram {
+    padding: 12px;
+  }
+  
   .diagram-container {
     gap: 10px;
     min-height: 100px;
   }
   
   .pedal-columns {
-    gap: 10px;
+    gap: 8px;
   }
   
   .pedal-column {
-    width: 25px;
+    width: 28px;
   }
   
   .pedal-position {
-    width: 25px;
-    height: 18px;
+    width: 28px;
+    height: 20px;
   }
   
   .horizontal-line {
-    width: 25px;
+    width: 28px;
   }
   
   .pedal-letter {
-    font-size: 12px;
+    font-size: 14px;
   }
 }

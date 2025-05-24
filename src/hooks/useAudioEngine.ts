@@ -29,30 +29,30 @@ export function useAudioEngine() {
   }, [isAudioStarted])
 
   useEffect(() => {
-    // Create reverb with faster generation
+    // Create reverb with more realistic harp-like characteristics
     reverbRef.current = new Tone.Reverb({
-      decay: 1.5,
-      wet: 0.2
+      decay: 3.5,      // Longer decay for concert hall sound
+      wet: 0.4,        // More wet signal for realistic ambience
+      preDelay: 0.02   // Small pre-delay for space
     }).toDestination()
 
-    // Create polyphonic synth optimized for glissando
+    // Create polyphonic synth with more realistic harp characteristics
     synthRef.current = new Tone.PolySynth(Tone.Synth, {
-      maxPolyphony: 12, // Allow more simultaneous notes for overlapping glissando
       oscillator: {
-        type: 'triangle'
+        type: 'triangle',
+        partialCount: 8  // More harmonics for richer sound
       },
       envelope: {
-        attack: 0.001,  // Very fast attack for responsive glissando
-        decay: 0.4,
-        sustain: 0.15,
-        release: 0.8 // Shorter release to prevent note overlap
+        attack: 0.003,   // Very fast attack like plucked string
+        decay: 1.2,      // Longer decay for sustain
+        sustain: 0.08,   // Lower sustain for more natural decay
+        release: 2.5     // Longer release for natural fade
       },
-      volume: -4
+      volume: -2
     }).connect(reverbRef.current)
 
     // Set minimal latency
     Tone.context.lookAhead = 0.01 // Reduce lookahead to 10ms
-    Tone.context.updateInterval = 0.01 // Update every 10ms
 
     // Start audio on any user interaction
     const startAudio = () => {
@@ -90,9 +90,9 @@ export function useAudioEngine() {
         Tone.start()
       }
       
-      // Play with shorter duration for cleaner glissando
-      const velocity = 0.75 + Math.random() * 0.15
-      const duration = '16n' // Shorter notes for better glissando separation
+      // Play with realistic harp note duration and dynamics
+      const velocity = 0.6 + Math.random() * 0.25
+      const duration = '4n'  // Longer duration for more realistic harp sustain
       synthRef.current.triggerAttackRelease(frequency, duration, '+0', velocity)
     } catch (error) {
       console.warn('Audio playback error:', error)
@@ -118,9 +118,9 @@ export function useAudioEngine() {
       notes.forEach((note, index) => {
         const { frequency } = applyPedalToNote(note.note, note.octave, pedalPositions)
         const time = now + (index * timePerNote)
-        const velocity = 0.6 + Math.random() * 0.2
+        const velocity = 0.5 + Math.random() * 0.2
         
-        synthRef.current!.triggerAttackRelease(frequency, '8n', time, velocity)
+        synthRef.current!.triggerAttackRelease(frequency, '4n', time, velocity)
       })
     } catch (error) {
       console.warn('Glissando playback error:', error)

@@ -260,15 +260,15 @@ export const presetLibrary: CategorizedPreset[] = [
   {
     name: 'Whole Tone 1',
     category: 'Whole Tone',
-    pedals: { D: 'natural', C: 'natural', B: 'flat', E: 'natural', F: 'sharp', G: 'sharp', A: 'natural' },
+    pedals: { D: 'natural', C: 'natural', B: 'flat', E: 'natural', F: 'sharp', G: 'sharp', A: 'sharp' },
     produces: 'C-D-E-F♯-G♯-A♯ whole tone scale',
     usage: 'Impressionist music, dreamy effects'
   },
   {
     name: 'Whole Tone 2',
     category: 'Whole Tone',
-    pedals: { D: 'sharp', C: 'sharp', B: 'natural', E: 'flat', F: 'natural', G: 'natural', A: 'sharp' },
-    produces: 'D♭-E♭-F-G-A-B whole tone scale',
+    pedals: { D: 'flat', C: 'sharp', B: 'natural', E: 'flat', F: 'natural', G: 'natural', A: 'natural' },
+    produces: 'C♯-D♯-F-G-A-B whole tone scale',
     usage: 'Impressionist music, dreamy effects'
   },
 

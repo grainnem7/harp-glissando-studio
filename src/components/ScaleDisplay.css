@@ -1,0 +1,60 @@
+.scale-display {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border-radius: 16px;
+  padding: 15px 20px;
+  margin: 10px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.scale-display h3 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.interactive-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: none;
+  letter-spacing: 0;
+  font-style: italic;
+}
+
+.scale-canvas {
+  display: block;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  min-height: 100px;
+}
+
+@media (max-width: 768px) {
+  .scale-display {
+    padding: 15px;
+    margin: 10px 0;
+  }
+
+  .scale-display h3 {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .scale-canvas {
+    max-width: 100%;
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scale-display {
+    padding: 10px 12px;
+  }
+}

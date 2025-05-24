@@ -1,4 +1,4 @@
-import { useState, useRef, TouchEvent as ReactTouchEvent, useEffect } from 'react'
+import { useState, useRef, useEffect, PointerEvent as ReactPointerEvent } from 'react'
 import './HarpStrings.css'
 import { HarpString, PedalPositions } from '../types'
 import { generateHarpStrings, HarpRange, applyPedalToNote } from '../utils/musicTheory'
@@ -10,14 +10,13 @@ interface HarpStringsProps {
   onGlissando: (notes: Array<{note: string, octave: number}>) => void
 }
 
-function HarpStrings({ range, pedalPositions, onStringPlay, onGlissando }: HarpStringsProps) {
+function HarpStrings({ range, pedalPositions, onStringPlay }: HarpStringsProps) {
   const [strings, setStrings] = useState<HarpString[]>(() => generateHarpStrings(range))
   const [activeStrings, setActiveStrings] = useState<Set<number>>(new Set())
   const containerRef = useRef<HTMLDivElement>(null)
-  const isTouchingRef = useRef(false)
+  const isPointerDownRef = useRef(false)
   const lastPlayedStringRef = useRef<number>(-1)
-  const touchStartTimeRef = useRef<number>(0)
-  const lastPlayTimeRef = useRef<number>(0)
+  const touchMapRef = useRef<Map<number, number>>(new Map()) // pointerId -> stringIndex
 
   useEffect(() => {
     setStrings(generateHarpStrings(range))
@@ -29,32 +28,23 @@ function HarpStrings({ range, pedalPositions, onStringPlay, onGlissando }: HarpS
     return `${note}${string.octave}`
   }
 
-  const getStringAtPosition = (x: number): number => {
-    if (!containerRef.current) return -1
-    const rect = containerRef.current.getBoundingClientRect()
-    const relativeX = x - rect.left
-    const stringWidth = rect.width / strings.length
-    const stringIndex = Math.floor(relativeX / stringWidth)
+  const getStringIndexFromElement = (element: Element | null): number => {
+    if (!element) return -1
     
-    // Clamp to valid range
-    if (stringIndex < 0) return 0
-    if (stringIndex >= strings.length) return strings.length - 1
+    // Check if the element is a harp string or its child
+    const stringElement = element.closest('.harp-string')
+    if (!stringElement) return -1
     
-    return stringIndex
+    // Find the index by iterating through all string elements
+    const allStrings = containerRef.current?.querySelectorAll('.harp-string')
+    if (!allStrings) return -1
+    
+    return Array.from(allStrings).indexOf(stringElement)
   }
 
-  const playString = (stringIndex: number, force = false) => {
+
+  const playString = (stringIndex: number) => {
     if (stringIndex < 0 || stringIndex >= strings.length) return
-    
-    // Only debounce if it's the same string being played repeatedly
-    const now = Date.now()
-    const timeSinceLastPlay = now - lastPlayTimeRef.current
-    const isSameString = stringIndex === lastPlayedStringRef.current
-    
-    // Prevent rapid re-triggering of the same string, but allow different strings immediately
-    if (!force && isSameString && timeSinceLastPlay < 30) return
-    
-    lastPlayTimeRef.current = now
     
     const string = strings[stringIndex]
     setActiveStrings(prev => new Set(prev).add(stringIndex))
@@ -66,75 +56,107 @@ function HarpStrings({ range, pedalPositions, onStringPlay, onGlissando }: HarpS
         newSet.delete(stringIndex)
         return newSet
       })
-    }, 200) // Even shorter visual feedback for smoother glissando
+    }, 100) // Very short visual feedback for smooth glissando
   }
 
-  const handleTouchStart = (e: ReactTouchEvent) => {
+  const handlePointerDown = (e: ReactPointerEvent) => {
     e.preventDefault()
-    e.stopPropagation()
     
-    const touch = e.touches[0]
-    const stringIndex = getStringAtPosition(touch.clientX)
+    // Get the element under the pointer
+    const element = document.elementFromPoint(e.clientX, e.clientY)
+    const stringIndex = getStringIndexFromElement(element)
     
-    touchStartTimeRef.current = Date.now()
-    
-    if (stringIndex >= 0 && stringIndex < strings.length) {
-      isTouchingRef.current = true
+    if (stringIndex >= 0) {
+      isPointerDownRef.current = true
+      touchMapRef.current.set(e.pointerId, stringIndex)
       lastPlayedStringRef.current = stringIndex
       playString(stringIndex)
+      
+      // Capture pointer for consistent tracking
+      if (e.currentTarget && 'setPointerCapture' in e.currentTarget) {
+        (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId)
+      }
     }
   }
 
-  const handleTouchMove = (e: ReactTouchEvent) => {
+  const handlePointerMove = (e: ReactPointerEvent) => {
     e.preventDefault()
-    e.stopPropagation()
     
-    if (!isTouchingRef.current) return
+    if (!isPointerDownRef.current) return
     
-    const touch = e.touches[0]
-    const stringIndex = getStringAtPosition(touch.clientX)
+    // Get the element under the pointer
+    const element = document.elementFromPoint(e.clientX, e.clientY)
+    const stringIndex = getStringIndexFromElement(element)
     
-    // Play each string as we move across them - no delay for smooth glissando
-    if (stringIndex >= 0 && stringIndex !== lastPlayedStringRef.current) {
-      lastPlayedStringRef.current = stringIndex
-      playString(stringIndex)
+    if (stringIndex >= 0) {
+      const previousIndex = touchMapRef.current.get(e.pointerId)
+      
+      // If we've moved to a different string
+      if (previousIndex !== stringIndex) {
+        touchMapRef.current.set(e.pointerId, stringIndex)
+        
+        // Play all strings between previous and current
+        if (previousIndex !== undefined && previousIndex >= 0) {
+          const direction = stringIndex > previousIndex ? 1 : -1
+          
+          // Play in the correct order
+          if (direction === 1) {
+            for (let i = previousIndex + 1; i <= stringIndex; i++) {
+              playString(i)
+            }
+          } else {
+            for (let i = previousIndex - 1; i >= stringIndex; i--) {
+              playString(i)
+            }
+          }
+        } else {
+          playString(stringIndex)
+        }
+        
+        lastPlayedStringRef.current = stringIndex
+      }
     }
   }
 
-  const handleTouchEnd = (e: ReactTouchEvent) => {
+  const handlePointerUp = (e: ReactPointerEvent) => {
     e.preventDefault()
-    e.stopPropagation()
     
-    // Just clean up the state
-    isTouchingRef.current = false
-    lastPlayedStringRef.current = -1
-  }
-
-  const handleMouseDown = (e: React.MouseEvent, stringIndex: number) => {
-    e.preventDefault()
-    e.stopPropagation()
-    playString(stringIndex)
+    // Remove from touch map
+    touchMapRef.current.delete(e.pointerId)
+    
+    // Release pointer capture
+    if (e.currentTarget && 'releasePointerCapture' in e.currentTarget) {
+      (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId)
+    }
+    
+    // Clean up the state if no more touches
+    if (touchMapRef.current.size === 0) {
+      isPointerDownRef.current = false
+      lastPlayedStringRef.current = -1
+    }
   }
 
   return (
     <div 
       className="harp-strings-container"
       ref={containerRef}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
       <div className="strings-wrapper">
         {strings.map((string, index) => (
           <div
             key={index}
             className={`harp-string ${string.color} ${activeStrings.has(index) ? 'active' : ''}`}
-            onMouseDown={(e) => handleMouseDown(e, index)}
           >
             <div className="string-line" />
-            <div className="string-label">
-              {getActualNoteName(string)}
-            </div>
+            {(index === 0 || index === strings.length - 1 || index % 7 === 0) && (
+              <div className="string-label">
+                {getActualNoteName(string)}
+              </div>
+            )}
           </div>
         ))}
       </div>

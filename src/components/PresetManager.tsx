@@ -1,7 +1,9 @@
-import { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import './PresetManager.css'
 import { PedalPositions } from '../types'
-import { presetLibrary, getAllCategories, getPresetsByCategory, PresetCategory, CategorizedPreset } from '../services/presetLibrary'
+import { getAllCategories, getPresetsByCategory, PresetCategory, CategorizedPreset } from '../services/presetLibrary'
+import PresetNotation from './PresetNotation'
 
 interface PresetManagerProps {
   onPresetSelect: (preset: PedalPositions) => void
@@ -47,15 +49,13 @@ function PresetManager({ onPresetSelect, currentPedals }: PresetManagerProps) {
     }
   }, [currentPedals])
 
-  const getPedalString = (pedals: PedalPositions): string => {
-    const order: (keyof PedalPositions)[] = ['D', 'C', 'B', 'E', 'F', 'G', 'A']
-    return order.map(pedal => {
-      switch (pedals[pedal]) {
-        case 'flat': return '♭'
-        case 'sharp': return '♯'
-        default: return '♮'
-      }
-    }).join(' ')
+  const PresetItem = ({ preset, onClick }: { preset: CategorizedPreset, onClick: () => void }) => {
+    return (
+      <div className="preset-item" onClick={onClick}>
+        <div className="preset-name">{preset.name}</div>
+        <PresetNotation pedals={preset.pedals} compact={true} />
+      </div>
+    )
   }
 
   return (
@@ -67,7 +67,7 @@ function PresetManager({ onPresetSelect, currentPedals }: PresetManagerProps) {
         ♪ Presets
       </button>
       
-      {isOpen && (
+      {isOpen && createPortal(
         <div className="preset-panel">
           <div className="preset-header">
             <h3>Presets</h3>
@@ -106,17 +106,11 @@ function PresetManager({ onPresetSelect, currentPedals }: PresetManagerProps) {
               </div>
             ) : (
               filteredPresets.map((preset, index) => (
-                <div
+                <PresetItem
                   key={`${preset.category}-${index}`}
-                  className="preset-item"
+                  preset={preset}
                   onClick={() => handlePresetClick(preset)}
-                >
-                  <div className="preset-name">{preset.name}</div>
-                  <div className="preset-pedals">{getPedalString(preset.pedals)}</div>
-                  {preset.produces && (
-                    <div className="preset-produces">→ {preset.produces}</div>
-                  )}
-                </div>
+                />
               ))
             )}
           </div>
@@ -126,7 +120,8 @@ function PresetManager({ onPresetSelect, currentPedals }: PresetManagerProps) {
               Save Current
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
