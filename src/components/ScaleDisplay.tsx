@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { PedalPositions, PedalNote, PedalPosition } from '../types'
-import { getScaleNotes } from '../utils/musicTheory'
 import './ScaleDisplay.css'
 
 interface ScaleDisplayProps {
